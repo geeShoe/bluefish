@@ -87,11 +87,11 @@ class BlueFish
     {
         $knownPassword = trim(filter_var($password, FILTER_SANITIZE_STRING));
 
-        if (password_verify($this->password, $knownPassword)) {
-            return true;
+        if (!password_verify($this->password, $knownPassword)) {
+            BlueFishException::passwordMismatch();
         }
 
-        BlueFishException::passwordMismatch();
+        return true;
     }
 
     /**
