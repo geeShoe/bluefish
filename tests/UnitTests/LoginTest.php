@@ -40,29 +40,40 @@ class LoginTest extends TestCase
      */
     public function loginCredsDataSet(): array
     {
+        $code100 = 100;
+        $username = 'Username cannot be empty.';
+        $code104 = 104;
+        $password = 'Password cannot be empty.';
+
         return [
-            ['', ''],
-            ['username', ''],
-            ['', 'password'],
-            ['<>', '<>'],
-            ['<>', 'password'],
-            ['username', '<>']
+            ['', '', $code100, $username],
+            ['username', '', $code104, $password],
+            ['', 'password', $code100, $username],
+            ['<>', '<>', $code100, $username],
+            ['<>', 'password', $code100, $username],
+            ['username', '<>', $code104, $password]
         ];
     }
 
     /**
      * @dataProvider loginCredsDataSet
      *
-     * @param string $username
-     * @param string $password
+     * @param string    $username
+     * @param string    $password
+     * @param int       $code       Exception code
+     * @param string    $message    Exception message
      *
      * @throws BlueFishException
      */
-    public function testSanitizeLoginCredsThrowsExceptionWithEmptyCreds(string $username, string $password): void
-    {
+    public function testSanitizeLoginCredsThrowsExceptionWithEmptyCreds(
+        string $username,
+        string $password,
+        int $code,
+        string $message
+    ): void {
         $this->expectException(BlueFishException::class);
-        $this->expectExceptionMessage('Username and/or password cannot be empty.');
-        $this->expectExceptionCode(100);
+        $this->expectExceptionMessage($message);
+        $this->expectExceptionCode($code);
 
         Login::sanitizeLoginCredentials($username, $password);
     }

@@ -25,10 +25,120 @@ namespace Geeshoe\BlueFish\Exceptions;
 
 use Throwable;
 
+/**
+ * Class BlueFishException
+ *
+ * @package Geeshoe\BlueFish\Exceptions
+ */
 class BlueFishException extends \Exception
 {
+    /**
+     * BlueFishException constructor.
+     *
+     * @param string         $message
+     * @param int            $code
+     * @param Throwable|null $previous
+     */
     public function __construct(string $message = "", int $code = 0, Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
+    }
+
+    /**
+     * @param Throwable|null $previous
+     *
+     * @throws BlueFishException
+     */
+    public static function usernameEmpty(Throwable $previous = null): void
+    {
+        throw new BlueFishException(
+            'Username cannot be empty.',
+            100,
+            $previous
+        );
+    }
+
+    /**
+     * @param Throwable|null $previous
+     *
+     * @throws BlueFishException
+     */
+    public static function userDoesNotExist(Throwable $previous = null): void
+    {
+        throw new BlueFishException(
+            'User does not exist.',
+            101,
+            $previous
+        );
+    }
+
+    /**
+     * @param Throwable|null $previous
+     *
+     * @throws BlueFishException
+     */
+    public static function passwordMismatch(Throwable $previous = null): void
+    {
+        throw new BlueFishException(
+            'Password mismatch.',
+            102,
+            $previous
+        );
+    }
+
+    /**
+     * @param Throwable|null $previous
+     *
+     * @throws BlueFishException
+     */
+    public static function unableToLoginFallBack(Throwable $previous = null): void
+    {
+        throw new BlueFishException(
+            'Unable to login. Contact administrator.',
+            103,
+            $previous
+        );
+    }
+
+    /**
+     * @param Throwable|null $previous
+     *
+     * @throws BlueFishException
+     */
+    public static function passwordEmpty(Throwable $previous = null): void
+    {
+        throw new BlueFishException(
+            'Password cannot be empty.',
+            104,
+            $previous
+        );
+    }
+
+    /**
+     * @param Throwable|null $previous
+     *
+     * @throws BlueFishException
+     */
+    public static function passwordVerifyEmpty(Throwable $previous = null): void
+    {
+        throw new BlueFishException(
+            'Password cannot be empty.',
+            105,
+            $previous
+        );
+    }
+
+    /**
+     * @param Throwable|null $previous
+     *
+     * @throws BlueFishException
+     */
+    public static function displayNameEmpty(Throwable $previous = null): void
+    {
+        throw new BlueFishException(
+            'Display name cannot be empty.',
+            106,
+            $previous
+        );
     }
 }

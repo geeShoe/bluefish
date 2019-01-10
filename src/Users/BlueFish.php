@@ -91,10 +91,7 @@ class BlueFish
             return true;
         }
 
-        throw new BlueFishException(
-            'Password mismatch.',
-            102
-        );
+        BlueFishException::passwordMismatch();
     }
 
     /**
@@ -129,11 +126,7 @@ class BlueFish
         try {
             $user = $this->getUser();
         } catch (BlueFishException $exception) {
-            throw new BlueFishException(
-                'User does not exist.',
-                101,
-                $exception
-            );
+            BlueFishException::userDoesNotExist($exception);
         }
 
         if (self::comparePassword($user->password)) {
@@ -172,9 +165,6 @@ class BlueFish
         //something breaks within the class. In theory, it's untestable and
         //should never be thrown, however better safe than sorry when it comes
         //to authentication.
-        throw new BlueFishException(
-            'Unable to login. Contact administrator.',
-            103
-        );
+        BlueFishException::unableToLoginFallBack();
     }
 }

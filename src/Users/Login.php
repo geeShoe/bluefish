@@ -40,11 +40,12 @@ class Login
      */
     protected static function checkEmptyCredentials(string $username, string $password): void
     {
-        if (empty($username) or empty($password)) {
-            throw new BlueFishException(
-                'Username and/or password cannot be empty.',
-                100
-            );
+        if (empty($username)) {
+            BlueFishException::usernameEmpty();
+        }
+
+        if (empty($password)) {
+            BlueFishException::passwordEmpty();
         }
     }
 
