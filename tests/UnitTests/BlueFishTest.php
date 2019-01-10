@@ -55,31 +55,16 @@ class BlueFishTest extends TestCase
     /**
      * @throws BlueFishException
      */
-    public function testGetUserThrowsExceptionWhenUnableToReturnResult(): void
-    {
-        $this->prepStmtMock->method('executePreparedFetchAsClass')
-            ->willThrowException(new DbLibQueryException('PDO::fetch() failed to retrieve a result.'));
-        $this->expectException(BlueFishException::class);
-        $this->expectExceptionMessage('PDO::fetch() failed to retrieve a result.');
-
-        $blueFish = new BlueFish($this->prepStmtMock);
-        $blueFish->login('username', 'password');
-    }
-
-    /**
-     * @throws BlueFishException
-     */
     public function testValidateUserThrowsExceptionWhenUserDoesNotExist(): void
     {
         $this->prepStmtMock->method('executePreparedFetchAsClass')
-            ->willReturn(new User());
-
+            ->willThrowException(new DbLibQueryException('PDO::fetch() failed to retrieve a result.'));
         $this->expectException(BlueFishException::class);
         $this->expectExceptionMessage('User does not exist.');
         $this->expectExceptionCode(101);
 
         $blueFish = new BlueFish($this->prepStmtMock);
-        $blueFish->login('user', 'pass');
+        $blueFish->login('username', 'password');
     }
 
     /**

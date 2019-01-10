@@ -126,14 +126,13 @@ class BlueFish
      */
     protected function validateUser(): bool
     {
-        $user = $this->getUser();
-
-        if (is_null($user->username)) {
-            $this->username = null;
-            $this->password = null;
+        try {
+            $user = $this->getUser();
+        } catch (BlueFishException $exception) {
             throw new BlueFishException(
                 'User does not exist.',
-                101
+                101,
+                $exception
             );
         }
 

@@ -19,7 +19,12 @@
     "require": {
         "geeshoe/dblib": "v1.0.0-Alpha",
         "php" : "^7.2",
-        "ext-pdo_mysql" : "*"
+        "ext-pdo_mysql" : "*",
+        "ramsey/uuid": "^3.8"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.1",
+        "symfony/dotenv": "^4.2"
     },
     "autoload": {
         "psr-4": {
@@ -30,8 +35,5 @@
         "psr-4" : {
             "Geeshoe\\BlueFish\\Tests\\": "tests/"
         }
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^7.1"
     }
 }
