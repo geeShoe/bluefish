@@ -17,7 +17,7 @@
         }
     ],
     "require": {
-        "geeshoe/dblib": "^v0.5.2",
+        "geeshoe/dblib": "v1.0.0-Alpha",
         "php" : "^7.2",
         "ext-pdo_mysql" : "*"
     },
