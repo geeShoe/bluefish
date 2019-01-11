@@ -71,9 +71,9 @@ class BlueFish
         $user->id = null;
         $user->username = null;
         $user->password = null;
-        $user->displayName = trim(filter_var($user->displayName, FILTER_SANITIZE_STRING));
-        $user->role = trim(filter_var($user->role, FILTER_SANITIZE_STRING));
-        $user->status = trim(filter_var($user->status, FILTER_SANITIZE_STRING));
+        $user->displayName = trim(filter_var($user->displayName, FILTER_SANITIZE_SPECIAL_CHARS));
+        $user->role = trim(filter_var($user->role, FILTER_SANITIZE_SPECIAL_CHARS));
+        $user->status = trim(filter_var($user->status, FILTER_SANITIZE_SPECIAL_CHARS));
 
         $this->userRecord = $user;
     }
@@ -85,7 +85,7 @@ class BlueFish
      */
     protected function comparePassword(string $password): bool
     {
-        $knownPassword = trim(filter_var($password, FILTER_SANITIZE_STRING));
+        $knownPassword = trim(filter_var($password, FILTER_SANITIZE_SPECIAL_CHARS));
 
         if (!password_verify($this->password, $knownPassword)) {
             BlueFishException::passwordMismatch();

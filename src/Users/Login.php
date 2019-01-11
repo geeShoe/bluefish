@@ -70,8 +70,8 @@ class Login
 
         $user = [];
 
-        $user['username'] = trim(filter_var($username, FILTER_SANITIZE_STRING));
-        $user['password'] = trim(filter_var($password, FILTER_SANITIZE_STRING));
+        $user['username'] = trim(filter_var($username, FILTER_SANITIZE_SPECIAL_CHARS));
+        $user['password'] = trim(filter_var($password, FILTER_SANITIZE_SPECIAL_CHARS));
 
         self::checkEmptyCredentials($user['username'], $user['password']);
 

@@ -48,10 +48,7 @@ class LoginTest extends TestCase
         return [
             ['', '', $code100, $username],
             ['username', '', $code104, $password],
-            ['', 'password', $code100, $username],
-            ['<>', '<>', $code100, $username],
-            ['<>', 'password', $code100, $username],
-            ['username', '<>', $code104, $password]
+            ['', 'password', $code100, $username]
         ];
     }
 
