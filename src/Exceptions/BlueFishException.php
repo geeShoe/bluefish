@@ -119,10 +119,10 @@ class BlueFishException extends \Exception
      *
      * @throws BlueFishException
      */
-    public static function passwordVerifyEmpty(Throwable $previous = null): void
+    public static function uuidProblem(Throwable $previous = null): void
     {
         throw new BlueFishException(
-            'Password cannot be empty.',
+            'Problem with creating a UUID.',
             105,
             $previous
         );
@@ -138,6 +138,20 @@ class BlueFishException extends \Exception
         throw new BlueFishException(
             'Display name cannot be empty.',
             106,
+            $previous
+        );
+    }
+
+    /**
+     * @param Throwable|null $previous
+     *
+     * @throws BlueFishException
+     */
+    public static function dbFailure(Throwable $previous = null): void
+    {
+        throw new BlueFishException(
+            'Db query failed.',
+            107,
             $previous
         );
     }
