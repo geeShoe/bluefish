@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS BF_Roles
 (
-  id CHAR(36) NOT NULL PRIMARY KEY,
+  id INT(2) NOT NULL PRIMARY KEY,
   role VARCHAR(20) NOT NULL,
   CONSTRAINT bf_roles_id_index
     UNIQUE (id),
@@ -11,7 +11,7 @@ ENGINE InnoDB;
 
 CREATE TABLE IF NOT EXISTS BF_Status
 (
-  id CHAR(36) NOT NULL PRIMARY KEY,
+  id INT(2) NOT NULL PRIMARY KEY,
   status VARCHAR(20) NOT NULL,
   CONSTRAINT bf_status_id_index
     UNIQUE (id),
@@ -26,8 +26,8 @@ CREATE TABLE IF NOT EXISTS BF_Users
   username VARCHAR(255) NOT NULL,
   password VARCHAR(255) NOT NULL,
   displayName VARCHAR(20) NOT NULL,
-  role CHAR(36) NOT NULL,
-  status CHAR(36) NOT NULL,
+  role INT(2) NOT NULL,
+  status INT(2) NOT NULL,
   CONSTRAINT bf_users_id_index
     UNIQUE (id),
   CONSTRAINT bf_users_username_index
