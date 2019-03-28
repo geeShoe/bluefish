@@ -17,7 +17,7 @@
         }
     ],
     "require": {
-        "geeshoe/dblib": "dev-develop",
+        "geeshoe/dblib": "^1.0.0-Alpha@alpha",
         "php" : "^7.2",
         "ext-pdo_mysql" : "*",
         "ramsey/uuid": "^3.8"

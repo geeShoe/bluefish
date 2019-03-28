@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b498c1d719bd0136646f700f95923202",
+    "content-hash": "480fa5d21de0748de85189dc79624bab",
     "packages": [
         {
             "name": "geeshoe/dblib",
-            "version": "dev-develop",
+            "version": "v1.0.0-Alpha.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/geeShoe/dblib.git",
-                "reference": "608f56406e7d74f6f50f342a3ac550e896acb966"
+                "reference": "bea4f184216fb5174cc8a77f696c68ff5ae446e7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/geeShoe/dblib/zipball/608f56406e7d74f6f50f342a3ac550e896acb966",
-                "reference": "608f56406e7d74f6f50f342a3ac550e896acb966",
+                "url": "https://api.github.com/repos/geeShoe/dblib/zipball/bea4f184216fb5174cc8a77f696c68ff5ae446e7",
+                "reference": "bea4f184216fb5174cc8a77f696c68ff5ae446e7",
                 "shasum": ""
             },
             "require": {
@@ -60,7 +60,7 @@
                 "pdo",
                 "php"
             ],
-            "time": "2019-03-08T03:36:13+00:00"
+            "time": "2019-03-28T02:29:31+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -1719,7 +1719,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "geeshoe/dblib": 20
+        "geeshoe/dblib": 15
     },
     "prefer-stable": false,
     "prefer-lowest": false,
