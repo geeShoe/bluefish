@@ -24,7 +24,7 @@ declare(strict_types=1);
 namespace Geeshoe\BlueFish\Users;
 
 use Geeshoe\BlueFish\Exceptions\BlueFishException;
-use Geeshoe\DbLib\DbLib;
+use Geeshoe\DbLib\Core\PreparedStatements;
 
 /**
  * Class BlueFish
@@ -34,87 +34,87 @@ use Geeshoe\DbLib\DbLib;
 class BlueFish
 {
     /**
-     * @var DbLib|null
+     * @var PreparedStatements
      */
-    protected $database = null;
+    protected $dblPrepStmt;
 
     /**
-     * @var null|string
+     * @var string
      */
-    protected $username = null;
+    protected $username;
 
     /**
-     * @var null|string
+     * @var string
      */
-    protected $password = null;
+    protected $password;
 
     /**
-     * @var null|array
+     * @var User
      */
-    protected $userRecord = null;
+    protected $userRecord;
 
     /**
      * BlueFish constructor.
      *
-     * @param DbLib $database
+     * @param PreparedStatements $preparedStatements
      */
-    public function __construct(DbLib $database)
+    public function __construct(PreparedStatements $preparedStatements)
     {
-        $this->database = $database;
+        $this->dblPrepStmt = $preparedStatements;
     }
 
     /**
-     * @param string $username
+     * @param User $user User data from database.
+     */
+    protected function populateUserRecord(User $user): void
+    {
+        $user->id = null;
+        $user->username = null;
+        $user->password = null;
+        $user->displayName = trim(filter_var($user->displayName, FILTER_SANITIZE_SPECIAL_CHARS));
+        $user->role = trim(filter_var($user->role, FILTER_SANITIZE_SPECIAL_CHARS));
+        $user->status = trim(filter_var($user->status, FILTER_SANITIZE_SPECIAL_CHARS));
+
+        $this->userRecord = $user;
+    }
+
+    /**
      * @param string $password
-     * @throws BlueFishException
-     */
-    protected function sanitizeLoginCredentials(string $username, string $password)
-    {
-        if (empty($username) or empty($password)) {
-            throw new BlueFishException(
-                'Username and/or password cannot be empty.',
-                100
-            );
-        }
-
-        $this->username = trim(filter_var($username, FILTER_SANITIZE_STRING));
-        $this->password = trim(filter_var($password, FILTER_SANITIZE_STRING));
-
-        if (empty($this->username) or empty($this->password)) {
-            throw new BlueFishException(
-                'Username and/or password cannot be empty.',
-                100
-            );
-        }
-    }
-
-    /**
-     * @param array $user User data from database.
-     */
-    protected function populateUserRecord(array $user): void
-    {
-        $this->userRecord = [
-            'displayName' => trim(filter_var($user['displayName'], FILTER_SANITIZE_STRING)),
-            'role' => trim(filter_var($user['role'], FILTER_SANITIZE_STRING)),
-            'status' => trim(filter_var($user['status'], FILTER_SANITIZE_STRING))
-        ];
-    }
-
-    /**
-     * @param string $passwordHash
      * @return bool
      * @throws BlueFishException
      */
-    protected function comparePassword(string $passwordHash): bool
+    protected function comparePassword(string $password): bool
     {
-        if (password_verify($this->password, $passwordHash)) {
-            return true;
+        $knownPassword = trim(filter_var($password, FILTER_SANITIZE_SPECIAL_CHARS));
+
+        if (!password_verify($this->password, $knownPassword)) {
+            BlueFishException::passwordMismatch();
         }
 
-        throw new BlueFishException(
-            'Password mismatch.',
-            102
-        );
+        return true;
+    }
+
+    /**
+     * @return User
+     *
+     * @throws BlueFishException
+     */
+    protected function getUser(): User
+    {
+        try {
+            $sql = 'SELECT `username`, `password`, `displayName`, `role`, `status`';
+            $sql .= ' FROM `BF_Users` WHERE username = :username';
+
+            $result = $this->dblPrepStmt->executePreparedFetchAsClass(
+                $sql,
+                ['username' => $this->username],
+                User::class
+            );
+        } catch (\Exception $exception) {
+            throw new BlueFishException($exception->getMessage(), $exception->getCode(), $exception);
+        }
+
+        return $result;
     }
 
     /**
@@ -123,42 +123,21 @@ class BlueFish
      */
     protected function validateUser(): bool
     {
-        $sql = 'SELECT `username`, `password` FROM `BF_Users` WHERE username = :username';
-
-        $param = [':username' => $this->username];
-
         try {
-            $query = $this->database->manipulateDataWithSingleReturn($sql, $param, \PDO::FETCH_ASSOC);
-        } catch (\Exception $exception) {
-            throw new BlueFishException($exception->getMessage(), $exception->getCode(), $exception);
+            $user = $this->getUser();
+        } catch (BlueFishException $exception) {
+            BlueFishException::userDoesNotExist($exception);
         }
 
-        $this->database = null;
-        unset($param);
-        unset($sql);
-
-        if (empty($query)) {
-            $query = null;
-            $this->username = null;
-            $this->password = null;
-            throw new BlueFishException(
-                'User does not exist.',
-                101
-            );
-        }
-
-        $passwordHash = trim(filter_var($query['password'], FILTER_SANITIZE_STRING));
-
-        if (self::comparePassword($passwordHash)) {
-            unset($passwordHash);
-            unset($query['username']);
-            unset($query['password']);
-            $this->username = null;
-            $this->password = null;
-            self::populateUserRecord($query);
+        if (self::comparePassword($user->password)) {
+            self::populateUserRecord($user);
             return true;
         }
 
+        //This return statement has intentionally been left here. In theory,
+        //it will never be executed and is untestable. It's here as a fallback
+        //in case something within the class breaks. Better safe than sorry
+        //when it comes to authentication.
         return false;
     }
 
@@ -167,16 +146,25 @@ class BlueFish
      *
      * @param string $username
      * @param string $password
-     * @return array
+     * @return User
+     *
      * @throws BlueFishException
      */
-    public function login(string $username, string $password): array
+    public function login(string $username, string $password): User
     {
-        self::sanitizeLoginCredentials($username, $password);
+        $credentials = Login::sanitizeLoginCredentials($username, $password);
+
+        $this->username = $credentials['username'];
+        $this->password = $credentials['password'];
+
         if (self::validateUser()) {
             return $this->userRecord;
         }
 
-        return [];
+        //This exception has been intentionally left here as a fallback in case
+        //something breaks within the class. In theory, it's untestable and
+        //should never be thrown, however better safe than sorry when it comes
+        //to authentication.
+        BlueFishException::unableToLoginFallBack();
     }
 }

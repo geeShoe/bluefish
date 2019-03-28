@@ -1,4 +1,4 @@
 /vendor
 /.directory
 .idea
-composer.lock
+.env.testing.local
