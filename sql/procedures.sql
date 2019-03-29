@@ -1,6 +1,6 @@
-CREATE OR REPLACE PROCEDURE add_user_status(uuid BINARY(36), status VARCHAR(20))
+CREATE OR REPLACE PROCEDURE add_user_status(uuid BINARY(36), statusName VARCHAR(20))
 BEGIN
-  INSERT INTO BF_Status SET id = UuidToBin(uuid), status = status;
+  INSERT INTO BF_Status SET id = UuidToBin(uuid), status = statusName;
 END;
 
 CREATE OR REPLACE PROCEDURE remove_user_status(uuid BINARY(36))
@@ -13,9 +13,9 @@ BEGIN
   SELECT * FROM get_all_user_status;
 END;
 
-CREATE OR REPLACE PROCEDURE add_user_role(uuid BINARY(36), role VARCHAR(20))
+CREATE OR REPLACE PROCEDURE add_user_role(uuid BINARY(36), roleName VARCHAR(20))
 BEGIN
-  INSERT INTO BF_Roles SET id = UuidToBin(uuid), role = role;
+  INSERT INTO BF_Roles SET id = UuidToBin(uuid), role = roleName;
 END;
 
 CREATE OR REPLACE PROCEDURE remove_user_role(uuid BINARY(36))
