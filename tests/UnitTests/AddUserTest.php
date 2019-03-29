@@ -22,11 +22,10 @@
 
 namespace Geeshoe\BlueFish\Tests\UnitTests;
 
-use Geeshoe\BlueFish\Db\PreparedStatementsExt;
 use Geeshoe\BlueFish\Exceptions\BlueFishException;
 use Geeshoe\BlueFish\Management\AddUser;
-use Geeshoe\BlueFish\Management\UserProspect;
-use Geeshoe\DbLib\Core\PreparedStatements;
+use Geeshoe\BlueFish\Model\UserProspect;
+use Geeshoe\DbLib\Core\PreparedStoredProcedures;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -38,7 +37,7 @@ use PHPUnit\Framework\TestCase;
 class AddUserTest extends TestCase
 {
     /**
-     * @var MockObject|PreparedStatementsExt
+     * @var MockObject|PreparedStoredProcedures
      */
     public $prepStmtMock;
 
@@ -47,7 +46,7 @@ class AddUserTest extends TestCase
      */
     protected function setUp()
     {
-        $this->prepStmtMock = $this->getMockBuilder(PreparedStatementsExt::class)
+        $this->prepStmtMock = $this->getMockBuilder(PreparedStoredProcedures::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
@@ -61,7 +60,7 @@ class AddUserTest extends TestCase
         $this->expectException(BlueFishException::class);
         $this->expectExceptionCode(102);
 
-        $user = new \Geeshoe\BlueFish\Model\UserProspect();
+        $user = new UserProspect();
         $user->username = 'someUser';
         $user->password = 'somePass';
         $user->passwordVerify = 'passSome';

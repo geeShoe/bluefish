@@ -23,10 +23,9 @@ declare(strict_types=1);
 
 namespace Geeshoe\BlueFish\Management;
 
-use Geeshoe\BlueFish\Db\PreparedStatementsExt;
 use Geeshoe\BlueFish\Exceptions\BlueFishException;
 use Geeshoe\BlueFish\Model\User;
-use Geeshoe\DbLib\Core\PreparedStatements;
+use Geeshoe\DbLib\Core\PreparedStoredProcedures;
 use Geeshoe\DbLib\Exceptions\DbLibQueryException;
 
 /**
@@ -37,18 +36,18 @@ use Geeshoe\DbLib\Exceptions\DbLibQueryException;
 abstract class AbstractUserDBFunctions
 {
     /**
-     * @var PreparedStatementsExt
+     * @var PreparedStoredProcedures
      */
     protected $prepStmt;
 
     /**
      * AbstractUserDBFunctions constructor.
      *
-     * @param PreparedStatementsExt $preparedStatements
+     * @param PreparedStoredProcedures $preparedStoredProcedures
      */
-    public function __construct(PreparedStatementsExt $preparedStatements)
+    public function __construct(PreparedStoredProcedures $preparedStoredProcedures)
     {
-        $this->prepStmt = $preparedStatements;
+        $this->prepStmt = $preparedStoredProcedures;
     }
 
     /**

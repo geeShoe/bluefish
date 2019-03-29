@@ -64,7 +64,7 @@ class AddUser extends AbstractUserDBFunctions
 
         try {
             $this->addUserToDb($user);
-        } catch (\Geeshoe\DbLib\DbLibException $exception) {
+        } catch (DbLibException $exception) {
             throw new BlueFishException('Unable to add user account.', 0, $exception);
         }
         return $this->getUserByID($user->id);
@@ -113,7 +113,7 @@ class AddUser extends AbstractUserDBFunctions
                     'status' => $user->status
                 ]
             );
-        } catch (Db $exception) {
+        } catch (DbLibException $exception) {
             BlueFishException::dbFailure($exception);
         }
     }

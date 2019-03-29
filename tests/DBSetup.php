@@ -23,9 +23,9 @@ declare(strict_types=1);
 
 namespace Geeshoe\BlueFish\Tests;
 
-use Geeshoe\BlueFish\Db\PreparedStatementsExt;
+
 use Geeshoe\BlueFish\Model\User;
-use Geeshoe\DbLib\Core\PreparedStatements;
+use Geeshoe\DbLib\Core\PreparedStoredProcedures;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -41,7 +41,7 @@ class DBSetup
     protected $pdo;
 
     /**
-     * @var PreparedStatementsExt
+     * @var PreparedStoredProcedures
      */
     protected $preparedStatement;
 
@@ -65,10 +65,10 @@ class DBSetup
      *
      * Should be called with PHPUnit's setUp() method.
      *
-     * @return PreparedStatementsExt
+     * @return PreparedStoredProcedures
      * @throws \Exception
      */
-    public function setupDb(): PreparedStatementsExt
+    public function setupDb(): PreparedStoredProcedures
     {
         $this->makePDO();
 
@@ -76,7 +76,7 @@ class DBSetup
         $this->pdo->exec('USE ' . getenv('GSD_BFTD_DATABASE').';');
         $this->createTestTable();
 
-        $this->preparedStatement = new PreparedStatementsExt($this->pdo);
+        $this->preparedStatement = new PreparedStoredProcedures($this->pdo);
 
         $this->insertTestUser();
 
