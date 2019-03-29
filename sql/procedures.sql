@@ -43,10 +43,10 @@ BEGIN
   SELECT * FROM get_all_user_accounts;
 END;
 
-CREATE OR REPLACE PROCEDURE get_user_account_by_username(username VARCHAR(255))
+CREATE OR REPLACE PROCEDURE get_user_account_by_username(user VARCHAR(255))
 BEGIN
-  SELECT * FROM get_all_user_accounts WHERE username = username;
-end;
+  SELECT * FROM get_all_user_accounts WHERE user = username;
+END;
 
 CREATE OR REPLACE PROCEDURE get_user_account_by_id(uuid BINARY(36))
 BEGIN

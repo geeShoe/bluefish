@@ -26,7 +26,6 @@ namespace Geeshoe\BlueFish\Tests;
 
 use Geeshoe\BlueFish\Model\User;
 use Geeshoe\DbLib\Core\PreparedStoredProcedures;
-use Ramsey\Uuid\Uuid;
 
 /**
  * Class DBSetup
@@ -185,7 +184,7 @@ class DBSetup
         $roleStatusUUIDs = $this->insertTestRoleStatus();
 
         $user = new User();
-        $user->id = Uuid::uuid4()->toString();
+        $user->id = USERUUID;
         $user->username = 'testName';
         $user->password = password_hash('password', PASSWORD_DEFAULT);
         $user->displayName = 'TestingAdmin';

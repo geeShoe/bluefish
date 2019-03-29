@@ -57,10 +57,11 @@ abstract class AbstractUserDBFunctions
      *
      * @throws BlueFishException
      */
-    protected function getUserByUsername(string $username): User
+    protected function getUserByUsername(string $username)
     {
-//        $sql = 'SELECT * FROM BF_Users WHERE username = :username;';
         $sql = 'CALL get_user_account_by_username(:username);';
+
+        $result = new User;
 
         try {
             $result = $this->prepStmt->executePreparedFetchAsClass(
@@ -72,6 +73,7 @@ abstract class AbstractUserDBFunctions
             BlueFishException::userDoesNotExist($exception);
         }
 
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $result;
     }
 
@@ -84,8 +86,9 @@ abstract class AbstractUserDBFunctions
      */
     protected function getUserByID(string $id): User
     {
-//        $sql = 'SELECT * FROM BF_Users WHERE id = :id;';
         $sql = 'CALL get_user_account_by_id(:id);';
+
+        $result = new User();
 
         try {
             $result = $this->prepStmt->executePreparedFetchAsClass(
@@ -97,6 +100,7 @@ abstract class AbstractUserDBFunctions
             BlueFishException::userDoesNotExist($exception);
         }
 
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $result;
     }
 }
