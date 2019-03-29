@@ -26,6 +26,7 @@ use Geeshoe\BlueFish\Exceptions\BlueFishException;
 use Geeshoe\BlueFish\Management\AddUser;
 use Geeshoe\BlueFish\Model\UserProspect;
 use Geeshoe\DbLib\Core\PreparedStoredProcedures;
+use Geeshoe\DbLib\Exceptions\DbLibException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -42,7 +43,11 @@ class AddUserTest extends TestCase
     public $prepStmtMock;
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
+     *
+     * @throws \PHPUnit\Framework\Exception
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \ReflectionException
      */
     protected function setUp()
     {
@@ -69,5 +74,27 @@ class AddUserTest extends TestCase
         $user->status = STATUSUUID;
 
         $addUser->createUserAccount($user);
+    }
+
+    /**
+     * @throws BlueFishException
+     */
+    public function testCreateUserAccountThrowsExceptionUponFailureAtTheDBLevel(): void
+    {
+        $this->prepStmtMock->method('executePreparedStoredProcedure')
+            ->willThrowException(new DbLibException('Testing'));
+
+        $addUser = new AddUser($this->prepStmtMock);
+
+        $userProspect = new UserProspect();
+        $userProspect->username = 'Test';
+        $userProspect->password = 'myPass';
+        $userProspect->passwordVerify = 'myPass';
+        $userProspect->displayName = 'someDisplay';
+        $userProspect->role = ROLEUUID;
+        $userProspect->status = STATUSUUID;
+
+        $this->expectException(BlueFishException::class);
+        $addUser->createUserAccount($userProspect);
     }
 }

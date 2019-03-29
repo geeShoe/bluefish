@@ -64,7 +64,7 @@ class AddUser extends AbstractUserDBFunctions
 
         try {
             $this->addUserToDb($user);
-        } catch (DbLibException $exception) {
+        } catch (BlueFishException $exception) {
             throw new BlueFishException('Unable to add user account.', 0, $exception);
         }
         return $this->getUserByID($user->id);
