@@ -22,16 +22,14 @@
 
 namespace Geeshoe\BlueFish\Tests\FunctionalTests;
 
-use Geeshoe\BlueFish\Db\PreparedStatementsExt;
 use Geeshoe\BlueFish\Exceptions\BlueFishException;
 use Geeshoe\BlueFish\Management\AddUser;
 use Geeshoe\BlueFish\Model\UserProspect;
 use Geeshoe\BlueFish\Tests\DBSetupForFuncTests;
 use Geeshoe\BlueFish\Model\User;
-use Geeshoe\DbLib\Core\PreparedStatements;
+use Geeshoe\DbLib\Core\PreparedStoredProcedures;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Ramsey\Uuid\Uuid;
 
 /**
  * Class AddUserFuncTest
@@ -43,16 +41,24 @@ class AddUserFuncTest extends TestCase
     use DBSetupForFuncTests;
 
     /**
-     * @var MockObject|PreparedStatementsExt
+     * @var MockObject|PreparedStoredProcedures
      */
     public $prepStmt;
 
+    /**
+     * @var string
+     */
     public $roleID;
 
+    /**
+     * @var string
+     */
     public $statusId;
 
     /**
      * @inheritdoc
+     *
+     * @throws \Exception
      */
     protected function setUp()
     {
@@ -65,11 +71,12 @@ class AddUserFuncTest extends TestCase
     protected function tearDown()
     {
         $this->tearDownDB();
-
     }
 
     /**
      * @throws BlueFishException
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testCreateUserAccountAddsNewUser(): void
     {
