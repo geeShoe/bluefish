@@ -66,7 +66,7 @@ class BlueFishTest extends TestCase
     {
         $blueFish = new BlueFish($this->preparedStatement);
         $user = $blueFish->login('testName', 'password');
-        $this->assertInstanceOf(User::class, $user);
+        $this->assertInstanceOf(\Geeshoe\BlueFish\Model\User::class, $user);
         $this->assertSame('TestingAdmin', $user->displayName);
     }
 

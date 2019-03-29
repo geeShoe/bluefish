@@ -27,3 +27,6 @@ if (!is_file($dotFile) || !is_readable($dotFile)) {
 
 $env = new Symfony\Component\Dotenv\Dotenv();
 $env->load($dotFile);
+
+define('ROLEUUID', \Ramsey\Uuid\Uuid::uuid4()->toString());
+define('STATUSUUID', \Ramsey\Uuid\Uuid::uuid4()->toString());

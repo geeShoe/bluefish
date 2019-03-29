@@ -22,14 +22,16 @@
 
 namespace Geeshoe\BlueFish\Tests\FunctionalTests;
 
+use Geeshoe\BlueFish\Db\PreparedStatementsExt;
 use Geeshoe\BlueFish\Exceptions\BlueFishException;
 use Geeshoe\BlueFish\Management\AddUser;
-use Geeshoe\BlueFish\Management\UserProspect;
+use Geeshoe\BlueFish\Model\UserProspect;
 use Geeshoe\BlueFish\Tests\DBSetupForFuncTests;
-use Geeshoe\BlueFish\Users\User;
+use Geeshoe\BlueFish\Model\User;
 use Geeshoe\DbLib\Core\PreparedStatements;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Class AddUserFuncTest
@@ -41,9 +43,13 @@ class AddUserFuncTest extends TestCase
     use DBSetupForFuncTests;
 
     /**
-     * @var MockObject|PreparedStatements
+     * @var MockObject|PreparedStatementsExt
      */
     public $prepStmt;
+
+    public $roleID;
+
+    public $statusId;
 
     /**
      * @inheritdoc
@@ -59,6 +65,7 @@ class AddUserFuncTest extends TestCase
     protected function tearDown()
     {
         $this->tearDownDB();
+
     }
 
     /**
@@ -71,6 +78,8 @@ class AddUserFuncTest extends TestCase
         $newUser->password = 'pass';
         $newUser->passwordVerify = 'pass';
         $newUser->displayName = 'myDisplay';
+        $newUser->role = ROLEUUID;
+        $newUser->status = STATUSUUID;
 
         $addUser = new AddUser($this->prepStmt);
         $user = $addUser->createUserAccount($newUser);
@@ -88,6 +97,8 @@ class AddUserFuncTest extends TestCase
         $newUser->password = 'pass';
         $newUser->passwordVerify = 'pass';
         $newUser->displayName = 'myDisplay';
+        $newUser->role = ROLEUUID;
+        $newUser->status = STATUSUUID;
 
         $addUser = new AddUser($this->prepStmt);
         $addUser->createUserAccount($newUser);

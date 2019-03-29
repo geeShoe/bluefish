@@ -24,7 +24,7 @@ namespace Geeshoe\BlueFish\Tests\UnitTests;
 
 use Geeshoe\BlueFish\Exceptions\BlueFishException;
 use Geeshoe\BlueFish\Users\BlueFish;
-use Geeshoe\BlueFish\Users\User;
+use Geeshoe\BlueFish\Model\User;
 use Geeshoe\DbLib\Core\PreparedStatements;
 use Geeshoe\DbLib\Exceptions\DbLibQueryException;
 use PHPUnit\Framework\MockObject\MockObject;

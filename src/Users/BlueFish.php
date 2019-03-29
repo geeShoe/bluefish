@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Geeshoe\BlueFish\Users;
 
 use Geeshoe\BlueFish\Exceptions\BlueFishException;
+use Geeshoe\BlueFish\Model\User;
 use Geeshoe\DbLib\Core\PreparedStatements;
 
 /**

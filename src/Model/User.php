@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2018 Jesse Rushlow - Geeshoe Development
+ * Copyright 2019 Jesse Rushlow - Geeshoe Development
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
  */
 declare(strict_types=1);
 
-namespace Geeshoe\BlueFish\Users;
+namespace Geeshoe\BlueFish\Model;
 
 /**
  * Class User
@@ -31,7 +31,7 @@ namespace Geeshoe\BlueFish\Users;
 class User
 {
     /**
-     * @var int|string
+     * @var string  UUID
      */
     public $id;
 
@@ -51,12 +51,12 @@ class User
     public $displayName;
 
     /**
-     * @var string
+     * @var string  UUID
      */
     public $role;
 
     /**
-     * @var string
+     * @var string  UUID
      */
     public $status;
 }

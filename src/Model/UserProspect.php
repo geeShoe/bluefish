@@ -21,9 +21,7 @@
  */
 declare(strict_types=1);
 
-namespace Geeshoe\BlueFish\Management;
-
-use Geeshoe\BlueFish\Users\User;
+namespace Geeshoe\BlueFish\Model;
 
 /**
  * Class UserProspect

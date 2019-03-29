@@ -23,8 +23,9 @@ declare(strict_types=1);
 
 namespace Geeshoe\BlueFish\Management;
 
+use Geeshoe\BlueFish\Db\PreparedStatementsExt;
 use Geeshoe\BlueFish\Exceptions\BlueFishException;
-use Geeshoe\BlueFish\Users\User;
+use Geeshoe\BlueFish\Model\User;
 use Geeshoe\DbLib\Core\PreparedStatements;
 use Geeshoe\DbLib\Exceptions\DbLibQueryException;
 
@@ -36,16 +37,16 @@ use Geeshoe\DbLib\Exceptions\DbLibQueryException;
 abstract class AbstractUserDBFunctions
 {
     /**
-     * @var PreparedStatements
+     * @var PreparedStatementsExt
      */
     protected $prepStmt;
 
     /**
      * AbstractUserDBFunctions constructor.
      *
-     * @param PreparedStatements $preparedStatements
+     * @param PreparedStatementsExt $preparedStatements
      */
-    public function __construct(PreparedStatements $preparedStatements)
+    public function __construct(PreparedStatementsExt $preparedStatements)
     {
         $this->prepStmt = $preparedStatements;
     }
@@ -59,7 +60,8 @@ abstract class AbstractUserDBFunctions
      */
     protected function getUserByUsername(string $username): User
     {
-        $sql = 'SELECT * FROM BF_Users WHERE username = :username;';
+//        $sql = 'SELECT * FROM BF_Users WHERE username = :username;';
+        $sql = 'CALL get_user_account_by_username(:username);';
 
         try {
             $result = $this->prepStmt->executePreparedFetchAsClass(
@@ -83,7 +85,8 @@ abstract class AbstractUserDBFunctions
      */
     protected function getUserByID(string $id): User
     {
-        $sql = 'SELECT * FROM BF_Users WHERE id = :id;';
+//        $sql = 'SELECT * FROM BF_Users WHERE id = :id;';
+        $sql = 'CALL get_user_account_by_id(:id);';
 
         try {
             $result = $this->prepStmt->executePreparedFetchAsClass(

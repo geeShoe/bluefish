@@ -24,7 +24,8 @@ declare(strict_types=1);
 namespace Geeshoe\BlueFish\Management;
 
 use Geeshoe\BlueFish\Exceptions\BlueFishException;
-use Geeshoe\BlueFish\Users\User;
+use Geeshoe\BlueFish\Model\User;
+use Geeshoe\BlueFish\Model\UserProspect;
 use Geeshoe\DbLib\Exceptions\DbLibException;
 use Ramsey\Uuid\Uuid;
 
@@ -60,11 +61,12 @@ class AddUser extends AbstractUserDBFunctions
         }
 
         $user->password = $this->hashPassword($user->password);
-        $user->role = 2;
-        $user->status = 2;
 
-        $this->addUserToDb($user);
-
+        try {
+            $this->addUserToDb($user);
+        } catch (\Geeshoe\DbLib\DbLibException $exception) {
+            throw new BlueFishException('Unable to add user account.', 0, $exception);
+        }
         return $this->getUserByID($user->id);
     }
 
@@ -100,8 +102,8 @@ class AddUser extends AbstractUserDBFunctions
     protected function addUserToDb(UserProspect $user): void
     {
         try {
-            $this->prepStmt->executePreparedInsertQuery(
-                'BF_Users',
+            $this->prepStmt->executePreparedStoredProcedure(
+                'add_user_account',
                 [
                     'id' => $user->id,
                     'username' => $user->username,
@@ -111,7 +113,7 @@ class AddUser extends AbstractUserDBFunctions
                     'status' => $user->status
                 ]
             );
-        } catch (DbLibException $exception) {
+        } catch (Db $exception) {
             BlueFishException::dbFailure($exception);
         }
     }

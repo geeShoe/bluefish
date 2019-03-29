@@ -23,7 +23,8 @@ declare(strict_types=1);
 
 namespace Geeshoe\BlueFish\Tests;
 
-use Geeshoe\BlueFish\Users\User;
+use Geeshoe\BlueFish\Db\PreparedStatementsExt;
+use Geeshoe\BlueFish\Model\User;
 use Geeshoe\DbLib\Core\PreparedStatements;
 use Ramsey\Uuid\Uuid;
 
@@ -40,7 +41,7 @@ class DBSetup
     protected $pdo;
 
     /**
-     * @var PreparedStatements
+     * @var PreparedStatementsExt
      */
     protected $preparedStatement;
 
@@ -64,10 +65,10 @@ class DBSetup
      *
      * Should be called with PHPUnit's setUp() method.
      *
-     * @return PreparedStatements
+     * @return PreparedStatementsExt
      * @throws \Exception
      */
-    public function setupDb(): PreparedStatements
+    public function setupDb(): PreparedStatementsExt
     {
         $this->makePDO();
 
@@ -75,7 +76,7 @@ class DBSetup
         $this->pdo->exec('USE ' . getenv('GSD_BFTD_DATABASE').';');
         $this->createTestTable();
 
-        $this->preparedStatement = new PreparedStatements($this->pdo);
+        $this->preparedStatement = new PreparedStatementsExt($this->pdo);
 
         $this->insertTestUser();
 
@@ -132,8 +133,17 @@ class DBSetup
 
     protected function createTestTable(): void
     {
-        $sql = file_get_contents(dirname(__DIR__, 1) . '/blueFishTables.sql');
-        $this->pdo->exec($sql);
+        $baseDir = dirname(__DIR__, 1) . '/sql/';
+
+        $sql['tables'] = file_get_contents($baseDir . 'blueFishTables.sql');
+        $sql['functions'] = file_get_contents($baseDir . 'functions.sql');
+        $sql['views'] = file_get_contents($baseDir . 'views.sql');
+        $sql['procedures'] = file_get_contents($baseDir . 'procedures.sql');
+
+        foreach ($sql as $file) {
+            $this->pdo->exec($file);
+        }
+//        $this->pdo->exec($sql);
     }
 
     /**
@@ -143,24 +153,26 @@ class DBSetup
     protected function insertTestRoleStatus(): array
     {
         $role = [
-            'id' => 2,
+            'id' => ROLEUUID,
             'role' => 'test'
         ];
 
         $status = [
-            'id' => 2,
+            'id' => STATUSUUID,
             'status' => 'test'
         ];
 
-        $this->preparedStatement->executePreparedInsertQuery(
-            'BF_Roles',
-            $role
-        );
+        $this->pdo->exec('CALL add_user_role("' . $role['id']. '", "'.$role['role'].'");');
+//        $this->preparedStatement->executePreparedInsertQuery(
+//            'BF_Roles',
+//            $role
+//        );
 
-        $this->preparedStatement->executePreparedInsertQuery(
-            'BF_Status',
-            $status
-        );
+        $this->pdo->exec('CALL add_user_status("'.$status['id'].'", "'.$status['status'].'");');
+//        $this->preparedStatement->executePreparedInsertQuery(
+//            'BF_Status',
+//            $status
+//        );
 
         return ['role' => $role['id'], 'status' => $status['id']];
     }
@@ -180,8 +192,8 @@ class DBSetup
         $user->role = $roleStatusUUIDs['role'];
         $user->status = $roleStatusUUIDs['status'];
 
-        $this->preparedStatement->executePreparedInsertQuery(
-            'BF_Users',
+        $this->preparedStatement->executePreparedStoredProcedure(
+            'add_user_account',
             [
                 'id' => $user->id,
                 'username' => $user->username,
