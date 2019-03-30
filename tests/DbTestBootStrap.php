@@ -73,6 +73,7 @@ class DbTestBootStrap
     public static function setupDb(): PreparedStoredProcedures
     {
         self::makePDO();
+        self::removeTestSchema();
         self::createTempDb();
         self::$pdo->exec('USE ' . getenv('GSD_BFTD_DATABASE').';');
         self::createTestTable();
@@ -119,7 +120,7 @@ class DbTestBootStrap
     protected static function removeTestSchema(): int
     {
         return self::$pdo->exec(
-            'DROP SCHEMA`' . getenv('GSD_BFTD_DATABASE') . '`;'
+            'DROP SCHEMA IF EXISTS`' . getenv('GSD_BFTD_DATABASE') . '`;'
         );
     }
 

@@ -41,10 +41,9 @@ trait DBSetupForFuncTests
      *
      * @throws \Exception
      */
-    public function getDbSetup(): PreparedStatements
+    public static function getDbSetup(): PreparedStatements
     {
-        $setup = new DBSetup();
-        return $setup->setupDb();
+        return DbTestBootStrap::setupDb();
     }
 
     /**
@@ -52,7 +51,7 @@ trait DBSetupForFuncTests
      *
      * Call with PHPUnit's tearDown() method.
      */
-    public function tearDownDB(): void
+    public static function tearDownDB(): void
     {
         $setup = new DBSetup();
         $setup->tearDownDB();
