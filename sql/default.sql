@@ -1,0 +1,16 @@
+GRANT SHOW VIEW ON get_all_user_status TO 'user'@'host';
+GRANT SHOW VIEW ON get_all_user_roles TO 'user'@'host';
+GRANT SHOW VIEW ON get_all_user_accounts TO 'user'@'host';
+GRANT EXECUTE ON FUNCTION UuidToBin TO 'user'@'host';
+GRANT EXECUTE ON FUNCTION UuidFromBin TO 'user'@'host';
+GRANT EXECUTE ON PROCEDURE add_user_status TO 'user'@'host';
+GRANT EXECUTE ON PROCEDURE remove_user_status TO 'user'@'host';
+GRANT EXECUTE ON PROCEDURE get_all_status_records TO 'user'@'host';
+GRANT EXECUTE ON PROCEDURE add_user_role TO 'user'@'host';
+GRANT EXECUTE ON PROCEDURE remove_user_role TO 'user'@'host';
+GRANT EXECUTE ON PROCEDURE get_all_role_records TO 'user'@'host';
+GRANT EXECUTE ON PROCEDURE add_user_account TO 'user'@'host';
+GRANT EXECUTE ON PROCEDURE remove_user_account TO 'user'@'host';
+GRANT EXECUTE ON PROCEDURE get_all_user_records TO 'user'@'host';
+GRANT EXECUTE ON PROCEDURE get_user_account_by_username TO 'user'@'host';
+GRANT EXECUTE ON PROCEDURE get_user_account_by_id TO 'user'@'host';
