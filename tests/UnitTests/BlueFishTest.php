@@ -96,8 +96,6 @@ class BlueFishTest extends TestCase
     public function userObjectDataProvider(): array
     {
         return [
-//            ['username'],
-//            ['password'],
             ['displayName'],
             ['role'],
             ['status']
@@ -110,6 +108,10 @@ class BlueFishTest extends TestCase
      * @param string $property
      *
      * @throws BlueFishException
+     * @throws \InvalidArgumentException
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \Ramsey\Uuid\Exception\UnsatisfiedDependencyException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testBlueFishReturnsUserObjectWithGoodCredentials(string $property): void
     {
