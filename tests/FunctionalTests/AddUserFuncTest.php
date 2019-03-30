@@ -28,7 +28,6 @@ use Geeshoe\BlueFish\Model\UserProspect;
 use Geeshoe\BlueFish\Tests\DBSetupForFuncTests;
 use Geeshoe\BlueFish\Model\User;
 use Geeshoe\DbLib\Core\PreparedStoredProcedures;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -41,11 +40,6 @@ class AddUserFuncTest extends TestCase
     use DBSetupForFuncTests;
 
     /**
-     * @var MockObject|PreparedStoredProcedures
-     */
-    public $prepStmt;
-
-    /**
      * @var string
      */
     public $roleID;
@@ -56,21 +50,26 @@ class AddUserFuncTest extends TestCase
     public $statusId;
 
     /**
-     * @inheritdoc
+     * @var PreparedStoredProcedures
+     */
+    protected static $preparedStatement;
+
+    /**
+     * {@inheritDoc}
      *
      * @throws \Exception
      */
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
-        $this->prepStmt = $this->getDbSetup();
+        self::$preparedStatement = self::getDbSetup();
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    protected function tearDown()
+    public static function tearDownAfterClass()
     {
-        $this->tearDownDB();
+        self::tearDownDB();
     }
 
     /**
@@ -88,7 +87,7 @@ class AddUserFuncTest extends TestCase
         $newUser->role = ROLEUUID;
         $newUser->status = STATUSUUID;
 
-        $addUser = new AddUser($this->prepStmt);
+        $addUser = new AddUser(self::$preparedStatement);
         $user = $addUser->createUserAccount($newUser);
 
         $this->assertInstanceOf(User::class, $user);
@@ -107,7 +106,7 @@ class AddUserFuncTest extends TestCase
         $newUser->role = ROLEUUID;
         $newUser->status = STATUSUUID;
 
-        $addUser = new AddUser($this->prepStmt);
+        $addUser = new AddUser(self::$preparedStatement);
         $addUser->createUserAccount($newUser);
         $this->expectException(BlueFishException::class);
         $addUser->createUserAccount($newUser);

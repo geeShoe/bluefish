@@ -25,8 +25,8 @@ namespace Geeshoe\BlueFish\Tests\FunctionalTests;
 use Geeshoe\BlueFish\Exceptions\BlueFishException;
 use Geeshoe\BlueFish\Tests\DBSetupForFuncTests;
 use Geeshoe\BlueFish\Users\BlueFish;
-use Geeshoe\BlueFish\Users\User;
-use Geeshoe\DbLib\Core\PreparedStatements;
+use Geeshoe\BlueFish\Model\User;
+use Geeshoe\DbLib\Core\PreparedStoredProcedures;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -39,24 +39,26 @@ class BlueFishTest extends TestCase
     use DBSetupForFuncTests;
 
     /**
-     * @var PreparedStatements
+     * @var PreparedStoredProcedures
      */
-    protected $preparedStatement;
+    protected static $preparedStatement;
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
+     *
+     * @throws \Exception
      */
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
-        $this->preparedStatement = $this->getDbSetup();
+        self::$preparedStatement = self::getDbSetup();
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    protected function tearDown()
+    public static function tearDownAfterClass()
     {
-        $this->tearDownDB();
+        self::tearDownDB();
     }
 
     /**
@@ -64,9 +66,9 @@ class BlueFishTest extends TestCase
      */
     public function testLoginIsSuccessful(): void
     {
-        $blueFish = new BlueFish($this->preparedStatement);
+        $blueFish = new BlueFish(self::$preparedStatement);
         $user = $blueFish->login('testName', 'password');
-        $this->assertInstanceOf(\Geeshoe\BlueFish\Model\User::class, $user);
+        $this->assertInstanceOf(User::class, $user);
         $this->assertSame('TestingAdmin', $user->displayName);
     }
 
@@ -75,7 +77,7 @@ class BlueFishTest extends TestCase
      */
     public function testBlueFishThrowsExceptionWithInvalidUsername(): void
     {
-        $blueFish = new BlueFish($this->preparedStatement);
+        $blueFish = new BlueFish(self::$preparedStatement);
 
         $this->expectException(BlueFishException::class);
         $this->expectExceptionMessage('User does not exist.');
@@ -89,7 +91,7 @@ class BlueFishTest extends TestCase
      */
     public function testBlueFishThrowsExceptionWithInvalidPassword(): void
     {
-        $blueFish = new BlueFish($this->preparedStatement);
+        $blueFish = new BlueFish(self::$preparedStatement);
 
         $this->expectException(BlueFishException::class);
         $this->expectExceptionMessage('Password mismatch.');

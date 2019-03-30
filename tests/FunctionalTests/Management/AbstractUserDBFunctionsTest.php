@@ -47,7 +47,25 @@ class AbstractUserDBFunctionsTest extends TestCase
     /**
      * @var PreparedStoredProcedures
      */
-    public $prepStoredProc;
+    protected static $preparedStatement;
+
+    /**
+     * {@inheritDoc}
+     *
+     * @throws \Exception
+     */
+    public static function setUpBeforeClass()
+    {
+        self::$preparedStatement = self::getDbSetup();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function tearDownAfterClass()
+    {
+        self::tearDownDB();
+    }
 
     /**
      * {@inheritdoc}
@@ -56,16 +74,7 @@ class AbstractUserDBFunctionsTest extends TestCase
      */
     public function setUp()
     {
-        $this->prepStoredProc = $this->getDbSetup();
         $this->class = $this->extendAbstractClass();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function tearDown()
-    {
-        $this->tearDownDB();
     }
 
     /**
@@ -73,7 +82,7 @@ class AbstractUserDBFunctionsTest extends TestCase
      */
     public function extendAbstractClass(): AbstractUserDBFunctions
     {
-        return new class($this->prepStoredProc) extends AbstractUserDBFunctions
+        return new class(self::$preparedStatement) extends AbstractUserDBFunctions
         {
             public function userId(string $id): User
             {
