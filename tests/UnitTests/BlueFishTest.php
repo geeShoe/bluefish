@@ -24,11 +24,12 @@ namespace Geeshoe\BlueFish\Tests\UnitTests;
 
 use Geeshoe\BlueFish\Exceptions\BlueFishException;
 use Geeshoe\BlueFish\Users\BlueFish;
-use Geeshoe\BlueFish\Users\User;
-use Geeshoe\DbLib\Core\PreparedStatements;
+use Geeshoe\BlueFish\Model\User;
+use Geeshoe\DbLib\Core\PreparedStoredProcedures;
 use Geeshoe\DbLib\Exceptions\DbLibQueryException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Class BlueFishTest
@@ -38,7 +39,7 @@ use PHPUnit\Framework\TestCase;
 class BlueFishTest extends TestCase
 {
     /**
-     * @var MockObject|PreparedStatements
+     * @var MockObject|PreparedStoredProcedures
      */
     protected $prepStmtMock;
 
@@ -47,7 +48,7 @@ class BlueFishTest extends TestCase
      */
     protected function setUp()
     {
-        $this->prepStmtMock = $this->getMockBuilder(PreparedStatements::class)
+        $this->prepStmtMock = $this->getMockBuilder(PreparedStoredProcedures::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
@@ -95,8 +96,6 @@ class BlueFishTest extends TestCase
     public function userObjectDataProvider(): array
     {
         return [
-            ['username'],
-            ['password'],
             ['displayName'],
             ['role'],
             ['status']
@@ -109,10 +108,15 @@ class BlueFishTest extends TestCase
      * @param string $property
      *
      * @throws BlueFishException
+     * @throws \InvalidArgumentException
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \Ramsey\Uuid\Exception\UnsatisfiedDependencyException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testBlueFishReturnsUserObjectWithGoodCredentials(string $property): void
     {
         $userObject = new User();
+        $userObject->id = Uuid::uuid4()->toString();
         $userObject->username = 'username';
         $userObject->password = password_hash('password', PASSWORD_DEFAULT);
         $userObject->displayName = 'myName';

@@ -17,43 +17,46 @@
 
 /**
  * User: Jesse Rushlow - Geeshoe Development
- * Date: 1/11/19 - 5:02 AM
+ * Date: 12/9/18 - 11:04 PM
  */
 declare(strict_types=1);
 
-namespace Geeshoe\BlueFish\Tests;
-
-use Geeshoe\DbLib\Core\PreparedStatements;
+namespace Geeshoe\BlueFish\Model;
 
 /**
- * Trait DBSetupForFuncTests
+ * Class User
  *
- * @package Geeshoe\BlueFish\Tests
+ * @package Geeshoe\BlueFish\Users
  */
-trait DBSetupForFuncTests
+class User
 {
     /**
-     * Create a test DB and tables for functional tests.
-     *
-     * Call with PHPUnit's setUp() method.
-     *
-     * @return PreparedStatements
-     *
-     * @throws \Exception
+     * @var string  UUID
      */
-    public static function getDbSetup(): PreparedStatements
-    {
-        return DbTestBootStrap::setupDb();
-    }
+    public $id;
 
     /**
-     * Destroy the test DB used for functional tests.
-     *
-     * Call with PHPUnit's tearDown() method.
+     * @var string
      */
-    public static function tearDownDB(): void
-    {
-        $setup = new DBSetup();
-        $setup->tearDownDB();
-    }
+    public $username;
+
+    /**
+     * @var string
+     */
+    public $password;
+
+    /**
+     * @var string
+     */
+    public $displayName;
+
+    /**
+     * @var string  UUID
+     */
+    public $role;
+
+    /**
+     * @var string  UUID
+     */
+    public $status;
 }

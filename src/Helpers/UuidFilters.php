@@ -17,43 +17,42 @@
 
 /**
  * User: Jesse Rushlow - Geeshoe Development
- * Date: 1/11/19 - 5:02 AM
+ * Date: 3/28/19 - 10:08 PM
  */
 declare(strict_types=1);
 
-namespace Geeshoe\BlueFish\Tests;
-
-use Geeshoe\DbLib\Core\PreparedStatements;
+namespace Geeshoe\BlueFish\Helpers;
 
 /**
- * Trait DBSetupForFuncTests
+ * Class UuidFilters
  *
- * @package Geeshoe\BlueFish\Tests
+ * @package Geeshoe\BlueFish\Helpers
  */
-trait DBSetupForFuncTests
+class UuidFilters
 {
     /**
-     * Create a test DB and tables for functional tests.
+     * Replace spaces with dashes, filter out all non alpha numeric's, and
+     * return lower case string.
      *
-     * Call with PHPUnit's setUp() method.
+     * @param string $string
      *
-     * @return PreparedStatements
-     *
-     * @throws \Exception
+     * @return string
      */
-    public static function getDbSetup(): PreparedStatements
+    public static function filterAlphaNumDash(string $string): string
     {
-        return DbTestBootStrap::setupDb();
+        return preg_replace(
+            '/[^a-z0-9-]/',
+            '',
+            strtolower(self::filterSpaceToDash($string))
+        );
     }
 
     /**
-     * Destroy the test DB used for functional tests.
-     *
-     * Call with PHPUnit's tearDown() method.
+     * @param string $string
+     * @return string
      */
-    public static function tearDownDB(): void
+    public static function filterSpaceToDash(string $string): string
     {
-        $setup = new DBSetup();
-        $setup->tearDownDB();
+        return preg_replace('/[\s]/', '-', $string);
     }
 }

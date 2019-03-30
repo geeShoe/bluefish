@@ -24,8 +24,8 @@ declare(strict_types=1);
 namespace Geeshoe\BlueFish\Management;
 
 use Geeshoe\BlueFish\Exceptions\BlueFishException;
-use Geeshoe\BlueFish\Users\User;
-use Geeshoe\DbLib\Core\PreparedStatements;
+use Geeshoe\BlueFish\Model\User;
+use Geeshoe\DbLib\Core\PreparedStoredProcedures;
 use Geeshoe\DbLib\Exceptions\DbLibQueryException;
 
 /**
@@ -36,18 +36,18 @@ use Geeshoe\DbLib\Exceptions\DbLibQueryException;
 abstract class AbstractUserDBFunctions
 {
     /**
-     * @var PreparedStatements
+     * @var PreparedStoredProcedures
      */
     protected $prepStmt;
 
     /**
      * AbstractUserDBFunctions constructor.
      *
-     * @param PreparedStatements $preparedStatements
+     * @param PreparedStoredProcedures $preparedStoredProcedures
      */
-    public function __construct(PreparedStatements $preparedStatements)
+    public function __construct(PreparedStoredProcedures $preparedStoredProcedures)
     {
-        $this->prepStmt = $preparedStatements;
+        $this->prepStmt = $preparedStoredProcedures;
     }
 
     /**
@@ -57,9 +57,11 @@ abstract class AbstractUserDBFunctions
      *
      * @throws BlueFishException
      */
-    protected function getUserByUsername(string $username): User
+    protected function getUserByUsername(string $username)
     {
-        $sql = 'SELECT * FROM BF_Users WHERE username = :username;';
+        $sql = 'CALL get_user_account_by_username(:username);';
+
+        $result = new User;
 
         try {
             $result = $this->prepStmt->executePreparedFetchAsClass(
@@ -71,6 +73,7 @@ abstract class AbstractUserDBFunctions
             BlueFishException::userDoesNotExist($exception);
         }
 
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $result;
     }
 
@@ -83,7 +86,9 @@ abstract class AbstractUserDBFunctions
      */
     protected function getUserByID(string $id): User
     {
-        $sql = 'SELECT * FROM BF_Users WHERE id = :id;';
+        $sql = 'CALL get_user_account_by_id(:id);';
+
+        $result = new User();
 
         try {
             $result = $this->prepStmt->executePreparedFetchAsClass(
@@ -95,6 +100,7 @@ abstract class AbstractUserDBFunctions
             BlueFishException::userDoesNotExist($exception);
         }
 
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $result;
     }
 }

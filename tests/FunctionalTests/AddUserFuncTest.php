@@ -24,11 +24,10 @@ namespace Geeshoe\BlueFish\Tests\FunctionalTests;
 
 use Geeshoe\BlueFish\Exceptions\BlueFishException;
 use Geeshoe\BlueFish\Management\AddUser;
-use Geeshoe\BlueFish\Management\UserProspect;
+use Geeshoe\BlueFish\Model\UserProspect;
 use Geeshoe\BlueFish\Tests\DBSetupForFuncTests;
-use Geeshoe\BlueFish\Users\User;
-use Geeshoe\DbLib\Core\PreparedStatements;
-use PHPUnit\Framework\MockObject\MockObject;
+use Geeshoe\BlueFish\Model\User;
+use Geeshoe\DbLib\Core\PreparedStoredProcedures;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -41,28 +40,42 @@ class AddUserFuncTest extends TestCase
     use DBSetupForFuncTests;
 
     /**
-     * @var MockObject|PreparedStatements
+     * @var string
      */
-    public $prepStmt;
+    public $roleID;
 
     /**
-     * @inheritdoc
+     * @var string
      */
-    protected function setUp()
+    public $statusId;
+
+    /**
+     * @var PreparedStoredProcedures
+     */
+    protected static $preparedStatement;
+
+    /**
+     * {@inheritDoc}
+     *
+     * @throws \Exception
+     */
+    public static function setUpBeforeClass()
     {
-        $this->prepStmt = $this->getDbSetup();
+        self::$preparedStatement = self::getDbSetup();
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    protected function tearDown()
+    public static function tearDownAfterClass()
     {
-        $this->tearDownDB();
+        self::tearDownDB();
     }
 
     /**
      * @throws BlueFishException
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testCreateUserAccountAddsNewUser(): void
     {
@@ -71,8 +84,10 @@ class AddUserFuncTest extends TestCase
         $newUser->password = 'pass';
         $newUser->passwordVerify = 'pass';
         $newUser->displayName = 'myDisplay';
+        $newUser->role = ROLEUUID;
+        $newUser->status = STATUSUUID;
 
-        $addUser = new AddUser($this->prepStmt);
+        $addUser = new AddUser(self::$preparedStatement);
         $user = $addUser->createUserAccount($newUser);
 
         $this->assertInstanceOf(User::class, $user);
@@ -88,9 +103,11 @@ class AddUserFuncTest extends TestCase
         $newUser->password = 'pass';
         $newUser->passwordVerify = 'pass';
         $newUser->displayName = 'myDisplay';
+        $newUser->role = ROLEUUID;
+        $newUser->status = STATUSUUID;
 
-        $addUser = new AddUser($this->prepStmt);
-        $addUser->createUserAccount($newUser);
+        $addUser = new AddUser(self::$preparedStatement);
+//        $addUser->createUserAccount($newUser);
         $this->expectException(BlueFishException::class);
         $addUser->createUserAccount($newUser);
     }

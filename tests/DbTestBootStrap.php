@@ -17,69 +17,40 @@
 
 /**
  * User: Jesse Rushlow - Geeshoe Development
- * Date: 1/11/19 - 5:03 AM
+ * Date: 3/29/19 - 9:33 PM
  */
 declare(strict_types=1);
 
 namespace Geeshoe\BlueFish\Tests;
 
-
 use Geeshoe\BlueFish\Model\User;
 use Geeshoe\DbLib\Core\PreparedStoredProcedures;
 
 /**
- * Class DBSetup
+ * Class DbTestBootStrap
  *
  * @package Geeshoe\BlueFish\Tests
  */
-class DBSetup
+class DbTestBootStrap
 {
     /**
      * @var \PDO
      */
-    protected $pdo;
+    protected static $pdo;
 
     /**
-     * @var PreparedStoredProcedures
+     * @throws \PDOException
      */
-    protected $preparedStatement;
-
-    /**
-     * Create a PDO Connection for testing using EnvVars
-     */
-    protected function makePDO(): void
+    protected static function makePDO(): void
     {
         $host = getenv('GSD_BFTD_HOST');
         $port = getenv('GSD_BFTD_PORT');
 
-        $this->pdo = new \PDO(
+        self::$pdo = new \PDO(
             'mysql:host=' . $host . ';port=' . $port,
             getenv('GSD_BFTD_USER'),
             getenv('GSD_BFTD_PASSWORD')
         );
-    }
-
-    /**
-     * Setup a test database for functional testing.
-     *
-     * Should be called with PHPUnit's setUp() method.
-     *
-     * @return PreparedStoredProcedures
-     * @throws \Exception
-     */
-    public function setupDb(): PreparedStoredProcedures
-    {
-        $this->makePDO();
-
-        $this->createTempDB();
-        $this->pdo->exec('USE ' . getenv('GSD_BFTD_DATABASE').';');
-        $this->createTestTable();
-
-        $this->preparedStatement = new PreparedStoredProcedures($this->pdo);
-
-        $this->insertTestUser();
-
-        return $this->preparedStatement;
     }
 
     /**
@@ -89,28 +60,41 @@ class DBSetup
      */
     public function tearDownDB(): void
     {
-        $this->makePDO();
-        $this->removeTestSchema();
-        $this->pdo = null;
+        self::makePDO();
+        self::removeTestSchema();
+        self::$pdo = null;
     }
 
     /**
-     * @return int
+     * @return PreparedStoredProcedures
+     * @throws \Geeshoe\DbLib\Exceptions\DbLibException
+     * @throws \PDOException
      */
-    protected function removeTestSchema(): int
+    public static function setupDb(): PreparedStoredProcedures
     {
-        return $this->pdo->exec(
-            'DROP SCHEMA`' . getenv('GSD_BFTD_DATABASE') . '`;'
-        );
+        self::makePDO();
+        self::removeTestSchema();
+        self::createTempDb();
+        self::$pdo->exec('USE ' . getenv('GSD_BFTD_DATABASE').';');
+        self::createTestTable();
+
+        $storedProcedure = new PreparedStoredProcedures(self::$pdo);
+
+        self::insertTestUser($storedProcedure);
+
+        return $storedProcedure;
     }
 
-    protected function createTempDB(): void
+    /**
+     * @throws \PDOException
+     */
+    protected static function createTempDb(): void
     {
-        $result = $this->createTestSchema();
+        $result = self::createTestSchema();
 
         if ($result !== 1) {
-            $this->removeTestSchema();
-            $result = $this->createTestSchema();
+            self::removeTestSchema();
+            $result = self::createTestSchema();
         }
 
         if ($result !== 1) {
@@ -123,14 +107,27 @@ class DBSetup
     /**
      * @return int
      */
-    protected function createTestSchema(): int
+    protected static function createTestSchema(): int
     {
-        return $this->pdo->exec(
+        return self::$pdo->exec(
             'CREATE SCHEMA`' . getenv('GSD_BFTD_DATABASE') . '`;'
         );
     }
 
-    protected function createTestTable(): void
+    /**
+     * @return int
+     */
+    protected static function removeTestSchema(): int
+    {
+        return self::$pdo->exec(
+            'DROP SCHEMA IF EXISTS`' . getenv('GSD_BFTD_DATABASE') . '`;'
+        );
+    }
+
+    /**
+     *
+     */
+    protected static function createTestTable(): void
     {
         $baseDir = dirname(__DIR__, 1) . '/sql/';
 
@@ -140,16 +137,15 @@ class DBSetup
         $sql['procedures'] = file_get_contents($baseDir . 'procedures.sql');
 
         foreach ($sql as $file) {
-            $this->pdo->exec($file);
+            self::$pdo->exec($file);
         }
-//        $this->pdo->exec($sql);
     }
 
     /**
      * @return array
      * @throws \Exception
      */
-    protected function insertTestRoleStatus(): array
+    protected static function insertTestRoleStatus(): array
     {
         $role = [
             'id' => ROLEUUID,
@@ -161,27 +157,21 @@ class DBSetup
             'status' => 'test'
         ];
 
-        $this->pdo->exec('CALL add_user_role("' . $role['id']. '", "'.$role['role'].'");');
-//        $this->preparedStatement->executePreparedInsertQuery(
-//            'BF_Roles',
-//            $role
-//        );
+        self::$pdo->exec('CALL add_user_role("' . $role['id']. '", "'.$role['role'].'");');
 
-        $this->pdo->exec('CALL add_user_status("'.$status['id'].'", "'.$status['status'].'");');
-//        $this->preparedStatement->executePreparedInsertQuery(
-//            'BF_Status',
-//            $status
-//        );
+        self::$pdo->exec('CALL add_user_status("'.$status['id'].'", "'.$status['status'].'");');
 
         return ['role' => $role['id'], 'status' => $status['id']];
     }
 
     /**
-     * @throws \Exception
+     * @param PreparedStoredProcedures $storedProcedures
+     *
+     * @throws \Geeshoe\DbLib\Exceptions\DbLibException
      */
-    protected function insertTestUser(): void
+    protected static function insertTestUser(PreparedStoredProcedures $storedProcedures): void
     {
-        $roleStatusUUIDs = $this->insertTestRoleStatus();
+        $roleStatusUUIDs = self::insertTestRoleStatus();
 
         $user = new User();
         $user->id = USERUUID;
@@ -191,7 +181,7 @@ class DBSetup
         $user->role = $roleStatusUUIDs['role'];
         $user->status = $roleStatusUUIDs['status'];
 
-        $this->preparedStatement->executePreparedStoredProcedure(
+        $storedProcedures->executePreparedStoredProcedure(
             'add_user_account',
             [
                 'id' => $user->id,

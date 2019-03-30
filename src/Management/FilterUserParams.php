@@ -24,6 +24,8 @@ declare(strict_types=1);
 namespace Geeshoe\BlueFish\Management;
 
 use Geeshoe\BlueFish\Exceptions\BlueFishException;
+use Geeshoe\BlueFish\Helpers\UuidFilters;
+use Geeshoe\BlueFish\Model\UserProspect;
 use Geeshoe\BlueFish\Users\Login;
 
 /**
@@ -86,6 +88,8 @@ class FilterUserParams extends Login
         $cleanUser->password = $filtered['password'];
         $cleanUser->passwordVerify = self::filterPasswordVerify($user->passwordVerify);
         $cleanUser->displayName = self::filterDisplayName($user->displayName);
+        $cleanUser->role = UuidFilters::filterAlphaNumDash($user->role);
+        $cleanUser->status = UuidFilters::filterAlphaNumDash($user->status);
 
         return $cleanUser;
     }
