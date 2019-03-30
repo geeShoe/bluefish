@@ -107,7 +107,7 @@ class AddUserFuncTest extends TestCase
         $newUser->status = STATUSUUID;
 
         $addUser = new AddUser(self::$preparedStatement);
-        $addUser->createUserAccount($newUser);
+//        $addUser->createUserAccount($newUser);
         $this->expectException(BlueFishException::class);
         $addUser->createUserAccount($newUser);
     }

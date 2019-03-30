@@ -125,7 +125,7 @@ class AbstractUserDBFunctionsTest extends TestCase
     {
         $user = $this->class->userName('testName');
         $this->assertInstanceOf(User::class, $user);
-        $this->assertSame('testName', $user->username);
+        $this->assertSame('TestingAdmin', $user->displayName);
     }
 
     public function testGetUserByNameThrowsExceptionWithInvalidUsername(): void

@@ -25,7 +25,8 @@ namespace Geeshoe\BlueFish\Users;
 
 use Geeshoe\BlueFish\Exceptions\BlueFishException;
 use Geeshoe\BlueFish\Model\User;
-use Geeshoe\DbLib\Core\PreparedStatements;
+use Geeshoe\DbLib\Core\PreparedStoredProcedures;
+use Geeshoe\DbLib\Exceptions\DbLibQueryException;
 
 /**
  * Class BlueFish
@@ -35,7 +36,7 @@ use Geeshoe\DbLib\Core\PreparedStatements;
 class BlueFish
 {
     /**
-     * @var PreparedStatements
+     * @var PreparedStoredProcedures
      */
     protected $dblPrepStmt;
 
@@ -57,9 +58,9 @@ class BlueFish
     /**
      * BlueFish constructor.
      *
-     * @param PreparedStatements $preparedStatements
+     * @param PreparedStoredProcedures $preparedStatements
      */
-    public function __construct(PreparedStatements $preparedStatements)
+    public function __construct(PreparedStoredProcedures $preparedStatements)
     {
         $this->dblPrepStmt = $preparedStatements;
     }
@@ -77,6 +78,22 @@ class BlueFish
         $user->status = trim(filter_var($user->status, FILTER_SANITIZE_SPECIAL_CHARS));
 
         $this->userRecord = $user;
+    }
+
+    protected function getUserRecord(string $userUUID): User
+    {
+        try {
+            $result = $this->dblPrepStmt->executePreparedFetchAsClass(
+                'Call get_user_account_by_id(:id)',
+                ['id' => $userUUID],
+                User::class
+            );
+        } catch (DbLibQueryException $exception) {
+            BlueFishException::dbFailure($exception);
+            $result = new User();
+        }
+
+        return $result;
     }
 
     /**
@@ -103,11 +120,8 @@ class BlueFish
     protected function getUser(): User
     {
         try {
-            $sql = 'SELECT `username`, `password`, `displayName`, `role`, `status`';
-            $sql .= ' FROM `BF_Users` WHERE username = :username';
-
             $result = $this->dblPrepStmt->executePreparedFetchAsClass(
-                $sql,
+                'CALL get_user_login_credentials(:username)',
                 ['username' => $this->username],
                 User::class
             );
@@ -131,7 +145,9 @@ class BlueFish
         }
 
         if (self::comparePassword($user->password)) {
-            self::populateUserRecord($user);
+            $userRecord = self::getUserRecord($user->id);
+            $user = null;
+            self::populateUserRecord($userRecord);
             return true;
         }
 

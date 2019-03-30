@@ -9,3 +9,6 @@ CREATE OR REPLACE SQL SECURITY INVOKER VIEW get_all_user_accounts AS
   FROM BF_Users
 INNER JOIN BF_Roles BR on BF_Users.role = BR.id
 INNER JOIN BF_Status BS on BF_Users.status = BS.id;
+
+CREATE OR REPLACE SQL SECURITY INVOKER VIEW get_user_login AS
+    SELECT UuidFromBin(BF_Users.id) AS id, username, password FROM BF_Users;

@@ -45,10 +45,15 @@ END;
 
 CREATE OR REPLACE PROCEDURE get_user_account_by_username(user VARCHAR(255))
 BEGIN
-  SELECT * FROM get_all_user_accounts WHERE user = username;
+  SELECT id, displayName, role, status FROM get_all_user_accounts WHERE BINARY username = user;
 END;
 
 CREATE OR REPLACE PROCEDURE get_user_account_by_id(uuid BINARY(36))
 BEGIN
   SELECT * FROM get_all_user_accounts WHERE uuid = id;
-end;
+END;
+
+CREATE OR REPLACE PROCEDURE get_user_login_credentials(user VARCHAR(255))
+BEGIN
+  SELECT * FROM get_user_login WHERE BINARY user = username;
+END;
