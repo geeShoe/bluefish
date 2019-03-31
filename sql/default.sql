@@ -14,3 +14,4 @@ GRANT EXECUTE ON PROCEDURE remove_user_account TO 'user'@'host';
 GRANT EXECUTE ON PROCEDURE get_all_user_records TO 'user'@'host';
 GRANT EXECUTE ON PROCEDURE get_user_account_by_username TO 'user'@'host';
 GRANT EXECUTE ON PROCEDURE get_user_account_by_id TO 'user'@'host';
+GRANT EXECUTE ON PROCEDURE get_user_login_credentials TO 'user'@'host';
