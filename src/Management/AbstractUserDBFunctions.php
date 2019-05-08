@@ -26,7 +26,7 @@ namespace Geeshoe\BlueFish\Management;
 use Geeshoe\BlueFish\Exceptions\BlueFishException;
 use Geeshoe\BlueFish\Model\User;
 use Geeshoe\DbLib\Core\PreparedStoredProcedures;
-use Geeshoe\DbLib\Exceptions\DbLibQueryException;
+use Geeshoe\DbLib\Exceptions\DbLibPreparedStmtException;
 
 /**
  * Class AbstractUserDBFunctions
@@ -69,7 +69,7 @@ abstract class AbstractUserDBFunctions
                 ['username' => $username],
                 User::class
             );
-        } catch (DbLibQueryException $exception) {
+        } catch (DbLibPreparedStmtException $exception) {
             BlueFishException::userDoesNotExist($exception);
         }
 
@@ -96,7 +96,7 @@ abstract class AbstractUserDBFunctions
                 ['id' => $id],
                 User::class
             );
-        } catch (DbLibQueryException $exception) {
+        } catch (DbLibPreparedStmtException $exception) {
             BlueFishException::userDoesNotExist($exception);
         }
 
