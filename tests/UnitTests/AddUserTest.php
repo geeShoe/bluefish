@@ -49,7 +49,7 @@ class AddUserTest extends TestCase
      * @throws \PHPUnit\Framework\MockObject\RuntimeException
      * @throws \ReflectionException
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->prepStmtMock = $this->getMockBuilder(PreparedStoredProcedures::class)
             ->disableOriginalConstructor()

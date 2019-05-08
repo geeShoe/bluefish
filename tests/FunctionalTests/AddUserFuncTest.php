@@ -59,7 +59,7 @@ class AddUserFuncTest extends TestCase
      *
      * @throws \Exception
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$preparedStatement = self::getDbSetup();
     }
@@ -67,7 +67,7 @@ class AddUserFuncTest extends TestCase
     /**
      * @inheritDoc
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         self::tearDownDB();
     }

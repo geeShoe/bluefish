@@ -54,7 +54,7 @@ class AbstractUserDBFunctionsTest extends TestCase
      *
      * @throws \Exception
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$preparedStatement = self::getDbSetup();
     }
@@ -62,7 +62,7 @@ class AbstractUserDBFunctionsTest extends TestCase
     /**
      * @inheritDoc
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         self::tearDownDB();
     }
@@ -72,7 +72,7 @@ class AbstractUserDBFunctionsTest extends TestCase
      *
      * @throws \Exception
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->class = $this->extendAbstractClass();
     }
