@@ -57,3 +57,8 @@ CREATE OR REPLACE PROCEDURE get_user_login_credentials(user VARCHAR(255))
 BEGIN
   SELECT * FROM get_user_login WHERE BINARY user = username;
 END;
+
+CREATE OR REPLACE PROCEDURE add_role(uuid BINARY(36), name VARCHAR(255))
+BEGIN
+    INSERT INTO BF_Roles SET id = UuidToBin(uuid), role = name;
+END;
