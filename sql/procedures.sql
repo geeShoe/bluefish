@@ -62,3 +62,8 @@ CREATE OR REPLACE PROCEDURE add_role(uuid BINARY(36), name VARCHAR(255))
 BEGIN
     INSERT INTO BF_Roles SET id = UuidToBin(uuid), role = name;
 END;
+
+CREATE OR REPLACE PROCEDURE add_status(uuid BINARY(36), name VARCHAR(50))
+BEGIN
+    INSERT INTO BF_Status SET id = UuidToBin(uuid), status = name;
+END;
