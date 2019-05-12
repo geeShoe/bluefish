@@ -22,6 +22,7 @@ namespace Geeshoe\BlueFish\Tests\UnitTests\Management;
 use Geeshoe\BlueFish\Management\Statuses;
 use Geeshoe\BlueFish\Model\Status;
 use Geeshoe\DbLib\Core\PreparedStoredProcedures;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
@@ -34,6 +35,23 @@ use Ramsey\Uuid\Uuid;
  */
 class StatusesTest extends TestCase
 {
+    /**
+     * @var MockObject|PreparedStoredProcedures
+     */
+    public $mockPrep;
+
+    /**
+     * @throws \PHPUnit\Framework\Exception
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \ReflectionException
+     */
+    protected function setUp(): void
+    {
+        $this->mockPrep = $this->getMockBuilder(PreparedStoredProcedures::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
     /**
      * @throws \Geeshoe\DbLib\Exceptions\DbLibPreparedStmtException
      * @throws \InvalidArgumentException
@@ -59,5 +77,24 @@ class StatusesTest extends TestCase
         $statuses = new Statuses($mockPrepStrdProc);
 
         $statuses->addStatus($status);
+    }
+
+    /**
+     * @throws \Geeshoe\DbLib\Exceptions\DbLibPreparedStmtException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     */
+    public function testGetStatusByNameCallsMySQLProcedure(): void
+    {
+        $this->mockPrep->expects($this->once())
+            ->method('executePreparedFetchAsClass')
+            ->with(
+                'CALL get_status_by_name(:status)',
+                ['status' => 'MyStatus'],
+                Status::class
+            )
+            ->willReturn(new Status());
+
+        $statuses = new Statuses($this->mockPrep);
+        $statuses->getStatusByName('MyStatus');
     }
 }

@@ -61,4 +61,22 @@ class Statuses
             ]
         );
     }
+
+    /**
+     * @param string $name
+     *
+     * @return Status
+     *
+     * @throws \Geeshoe\DbLib\Exceptions\DbLibPreparedStmtException
+     */
+    public function getStatusByName(string $name): Status
+    {
+        $status = $this->prepStmt->executePreparedFetchAsClass(
+            'CALL get_status_by_name(:status)',
+            ['status' => $name],
+            Status::class
+        );
+
+        return $status;
+    }
 }

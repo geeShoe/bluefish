@@ -67,3 +67,8 @@ CREATE OR REPLACE PROCEDURE add_status(uuid BINARY(36), name VARCHAR(50))
 BEGIN
     INSERT INTO BF_Status SET id = UuidToBin(uuid), status = name;
 END;
+
+CREATE OR REPLACE PROCEDURE get_status_by_name(name VARCHAR(50))
+BEGIN
+    SELECT UuidFromBin(id) as id, status FROM BF_Status WHERE status = name;
+END;
