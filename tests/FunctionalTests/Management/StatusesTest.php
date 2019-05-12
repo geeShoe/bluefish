@@ -115,4 +115,35 @@ class StatusesTest extends TestCase
         $this->assertSame($status->id, $result->id);
         $this->assertSame($status->status, $result->status);
     }
+
+    /**
+     * @throws \Geeshoe\DbLib\Exceptions\DbLibPreparedStmtException
+     * @throws \InvalidArgumentException
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \Ramsey\Uuid\Exception\UnsatisfiedDependencyException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
+    public function testGetStatusByIdReturnsStatusObject(): void
+    {
+        $id = Uuid::uuid4();
+
+        $status = new Status();
+        $status->id = $id->toString();
+        $status->status = 'FuncTestById';
+
+        $statuses = new Statuses(self::$storedProcedures);
+
+        self::$storedProcedures->executePreparedInsertQuery(
+            'BF_Status',
+            [
+                'id' => $id->getBytes(),
+                'status' => $status->status
+            ]
+        );
+
+        $result = $statuses->getStatusById($status->id);
+
+        $this->assertSame($status->id, $result->id);
+        $this->assertSame($status->status, $result->status);
+    }
 }

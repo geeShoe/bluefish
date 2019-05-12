@@ -79,4 +79,22 @@ class Statuses
 
         return $status;
     }
+
+    /**
+     * @param string $id
+     *
+     * @return Status
+     *
+     * @throws \Geeshoe\DbLib\Exceptions\DbLibPreparedStmtException
+     */
+    public function getStatusById(string $id): Status
+    {
+        $status = $this->prepStmt->executePreparedFetchAsClass(
+            'CALL get_status_by_id(:id)',
+            ['id' => $id],
+            Status::class
+        );
+
+        return $status;
+    }
 }

@@ -72,3 +72,8 @@ CREATE OR REPLACE PROCEDURE get_status_by_name(name VARCHAR(50))
 BEGIN
     SELECT UuidFromBin(id) as id, status FROM BF_Status WHERE status = name;
 END;
+
+CREATE OR REPLACE PROCEDURE get_status_by_id(uuid BINARY(36))
+BEGIN
+    SELECT UuidFromBin(id) as id, status FROM BF_Status WHERE id = UuidToBin(uuid);
+END;

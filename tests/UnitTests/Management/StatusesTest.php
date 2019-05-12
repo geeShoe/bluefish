@@ -97,4 +97,23 @@ class StatusesTest extends TestCase
         $statuses = new Statuses($this->mockPrep);
         $statuses->getStatusByName('MyStatus');
     }
+
+    /**
+     * @throws \Geeshoe\DbLib\Exceptions\DbLibPreparedStmtException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     */
+    public function testGetStatusByIdCallsMySQLProcedure(): void
+    {
+        $this->mockPrep->expects($this->once())
+            ->method('executePreparedFetchAsClass')
+            ->with(
+                'CALL get_status_by_id(:id)',
+                ['id' => '1234567890'],
+                Status::class
+            )
+            ->willReturn(new Status());
+
+        $statuses = new Statuses($this->mockPrep);
+        $statuses->getStatusById('1234567890');
+    }
 }
