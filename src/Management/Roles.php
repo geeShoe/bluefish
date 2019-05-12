@@ -77,4 +77,20 @@ class Roles
             Role::class
         );
     }
+
+    /**
+     * @param string $id
+     *
+     * @return Role
+     *
+     * @throws \Geeshoe\DbLib\Exceptions\DbLibPreparedStmtException
+     */
+    public function getRoleById(string $id): Role
+    {
+        return $this->prepStmt->executePreparedFetchAsClass(
+            'CALL get_role_by_id(:id);',
+            ['id' => $id],
+            Role::class
+        );
+    }
 }

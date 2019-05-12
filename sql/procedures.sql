@@ -68,6 +68,11 @@ BEGIN
     SELECT UuidFromBin(id) as id, role FROM BF_Roles WHERE role = name;
 END;
 
+CREATE OR REPLACE PROCEDURE get_role_by_id(uuid BINARY(36))
+BEGIN
+    SELECT UuidFromBin(id) as id, role FROM BF_Roles WHERE id = UuidToBin(uuid);
+END;
+
 CREATE OR REPLACE PROCEDURE add_status(uuid BINARY(36), name VARCHAR(50))
 BEGIN
     INSERT INTO BF_Status SET id = UuidToBin(uuid), status = name;

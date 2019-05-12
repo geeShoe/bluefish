@@ -100,4 +100,23 @@ class RolesTest extends TestCase
         $roles = new Roles($this->mockPrep);
         $roles->getRoleByName('UnitTest');
     }
+
+    /**
+     * @throws \Geeshoe\DbLib\Exceptions\DbLibPreparedStmtException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     */
+    public function testGetRoleByIdCallsMySQLProcedure(): void
+    {
+        $this->mockPrep->expects($this->once())
+            ->method('executePreparedFetchAsClass')
+            ->with(
+                'CALL get_role_by_id(:id);',
+                ['id' => '1234567890'],
+                Role::class
+            )
+            ->willReturn(new Role());
+
+        $roles = new Roles($this->mockPrep);
+        $roles->getRoleById('1234567890');
+    }
 }
