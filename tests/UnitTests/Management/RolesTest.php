@@ -22,6 +22,7 @@ namespace Geeshoe\BlueFish\Tests\UnitTests\Management;
 use Geeshoe\BlueFish\Management\Roles;
 use Geeshoe\BlueFish\Model\Role;
 use Geeshoe\DbLib\Core\PreparedStoredProcedures;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
@@ -34,6 +35,25 @@ use Ramsey\Uuid\Uuid;
  */
 class RolesTest extends TestCase
 {
+    /**
+     * @var MockObject|PreparedStoredProcedures
+     */
+    public $mockPrep;
+
+    /**
+     * {@inheritDoc}
+     *
+     * @throws \PHPUnit\Framework\Exception
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws \ReflectionException
+     */
+    protected function setUp(): void
+    {
+        $this->mockPrep = $this->getMockBuilder(PreparedStoredProcedures::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
     /**
      * @throws \Geeshoe\DbLib\Exceptions\DbLibPreparedStmtException
      * @throws \InvalidArgumentException
@@ -60,5 +80,24 @@ class RolesTest extends TestCase
         $roles = new Roles($mockPrepStrdProc);
 
         $roles->addRole($role);
+    }
+
+    /**
+     * @throws \Geeshoe\DbLib\Exceptions\DbLibPreparedStmtException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     */
+    public function testGetRoleByNameCallsMySQLProcedure(): void
+    {
+        $this->mockPrep->expects($this->once())
+            ->method('executePreparedFetchAsClass')
+            ->with(
+                'CALL get_role_by_name(:role);',
+                ['role' => 'UnitTest'],
+                Role::class
+            )
+            ->willReturn(new Role());
+
+        $roles = new Roles($this->mockPrep);
+        $roles->getRoleByName('UnitTest');
     }
 }

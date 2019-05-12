@@ -85,4 +85,32 @@ class RolesTest extends TestCase
 
         $this->assertSame($role->id, $result->id);
     }
+
+    /**
+     * @throws \Geeshoe\DbLib\Exceptions\DbLibPreparedStmtException
+     * @throws \InvalidArgumentException
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \Ramsey\Uuid\Exception\UnsatisfiedDependencyException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
+    public function testGetRoleByNameReturnsRole(): void
+    {
+        $id = Uuid::uuid4();
+
+        $role = new Role();
+        $role->id = $id->toString();
+        $role->role = 'UnitTestByName';
+
+        self::$storedProcedures->executePreparedInsertQuery(
+            'BF_Roles',
+            ['id' => $id->getBytes(), 'role' => $role->role]
+        );
+
+        $roles = new Roles(self::$storedProcedures);
+
+        $result = $roles->getRoleByName($role->role);
+
+        $this->assertSame($role->id, $result->id);
+        $this->assertSame($role->role, $result->role);
+    }
 }

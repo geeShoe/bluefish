@@ -61,4 +61,20 @@ class Roles
             ]
         );
     }
+
+    /**
+     * @param string $name
+     *
+     * @return Role
+     *
+     * @throws \Geeshoe\DbLib\Exceptions\DbLibPreparedStmtException
+     */
+    public function getRoleByName(string $name): Role
+    {
+        return $this->prepStmt->executePreparedFetchAsClass(
+            'CALL get_role_by_name(:role);',
+            ['role' => $name],
+            Role::class
+        );
+    }
 }
