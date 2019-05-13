@@ -20,7 +20,7 @@
  * Date: 1/11/19 - 3:01 AM
  */
 
-namespace Geeshoe\BlueFish\Tests\UnitTests;
+namespace Geeshoe\BlueFish\Tests\UnitTests\Management;
 
 use Geeshoe\BlueFish\Exceptions\BlueFishException;
 use Geeshoe\BlueFish\Management\FilterUserParams;

@@ -20,7 +20,7 @@
  * Date: 3/29/19 - 3:25 PM
  */
 
-namespace Geeshoe\BlueFish\Tests\UnitTests;
+namespace Geeshoe\BlueFish\Tests\UnitTests\Exceptions;
 
 use Geeshoe\BlueFish\Exceptions\BlueFishException;
 use PHPUnit\Framework\TestCase;
