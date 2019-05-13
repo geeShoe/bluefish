@@ -29,6 +29,7 @@ use Geeshoe\DbLib\Core\PreparedStoredProcedures;
 use Geeshoe\DbLib\Exceptions\DbLibException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Class AddUserTest
@@ -58,6 +59,8 @@ class AddUserTest extends TestCase
 
     /**
      * @throws BlueFishException
+     * @throws \InvalidArgumentException
+     * @throws \Ramsey\Uuid\Exception\UnsatisfiedDependencyException
      */
     public function testComparePasswordsThrowsExceptionIfPasswordsDontMatch(): void
     {
@@ -70,14 +73,16 @@ class AddUserTest extends TestCase
         $user->password = 'somePass';
         $user->passwordVerify = 'passSome';
         $user->displayName = 'someDisplay';
-        $user->role = ROLEUUID;
-        $user->status = STATUSUUID;
+        $user->role = Uuid::uuid4()->toString();
+        $user->status = Uuid::uuid4()->toString();
 
         $addUser->createUserAccount($user);
     }
 
     /**
      * @throws BlueFishException
+     * @throws \InvalidArgumentException
+     * @throws \Ramsey\Uuid\Exception\UnsatisfiedDependencyException
      */
     public function testCreateUserAccountThrowsExceptionUponFailureAtTheDBLevel(): void
     {
@@ -91,8 +96,8 @@ class AddUserTest extends TestCase
         $userProspect->password = 'myPass';
         $userProspect->passwordVerify = 'myPass';
         $userProspect->displayName = 'someDisplay';
-        $userProspect->role = ROLEUUID;
-        $userProspect->status = STATUSUUID;
+        $userProspect->role = Uuid::uuid4()->toString();
+        $userProspect->status = Uuid::uuid4()->toString();
 
         $this->expectException(BlueFishException::class);
         $addUser->createUserAccount($userProspect);

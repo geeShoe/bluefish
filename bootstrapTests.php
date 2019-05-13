@@ -27,11 +27,3 @@ if (!is_file($dotFile) || !is_readable($dotFile)) {
 
 $env = new Symfony\Component\Dotenv\Dotenv();
 $env->load($dotFile);
-
-/**
- * Uuid's are used for test role, status & user objects throughout multiple
- * functional tests.
- */
-define('USERUUID', \Ramsey\Uuid\Uuid::uuid4()->toString());
-define('ROLEUUID', \Ramsey\Uuid\Uuid::uuid4()->toString());
-define('STATUSUUID', \Ramsey\Uuid\Uuid::uuid4()->toString());
