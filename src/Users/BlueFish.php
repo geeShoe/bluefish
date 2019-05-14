@@ -26,7 +26,7 @@ namespace Geeshoe\BlueFish\Users;
 use Geeshoe\BlueFish\Exceptions\BlueFishException;
 use Geeshoe\BlueFish\Model\User;
 use Geeshoe\DbLib\Core\PreparedStoredProcedures;
-use Geeshoe\DbLib\Exceptions\DbLibQueryException;
+use Geeshoe\DbLib\Exceptions\DbLibPreparedStmtException;
 
 /**
  * Class BlueFish
@@ -88,7 +88,7 @@ class BlueFish
                 ['id' => $userUUID],
                 User::class
             );
-        } catch (DbLibQueryException $exception) {
+        } catch (DbLibPreparedStmtException $exception) {
             BlueFishException::dbFailure($exception);
             $result = new User();
         }
@@ -125,7 +125,7 @@ class BlueFish
                 ['username' => $this->username],
                 User::class
             );
-        } catch (\Exception $exception) {
+        } catch (DbLibPreparedStmtException $exception) {
             throw new BlueFishException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
