@@ -15,20 +15,19 @@
  * limitations under the License.
  */
 
-require __DIR__ . '/vendor/autoload.php';
+declare(strict_types=1);
 
-$dotFile = __DIR__ . '/.env.testing.local';
+namespace Geeshoe\BlueFish\Tests\Utilities;
 
-if (!is_file($dotFile) || !is_readable($dotFile)) {
-    throw new RuntimeException(
-        'The functional test suite requires a .env.testing.local file.'
-    );
+/**
+ * Interface DatabaseInterface
+ *
+ * @package Geeshoe\BlueFish\Tests\Utilities
+ */
+interface DatabaseInterface
+{
+    /**
+     * @return \PDO
+     */
+    public static function getConnection(): \PDO;
 }
-
-$env = new Symfony\Component\Dotenv\Dotenv();
-$env->load($dotFile);
-
-$connection = new \Geeshoe\BlueFish\Tests\Connection();
-$database = new \Geeshoe\BlueFish\Tests\Database($connection->getPDO());
-$database->createSchema();
-$database->execSQLFiles();

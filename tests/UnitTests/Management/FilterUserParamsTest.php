@@ -45,6 +45,8 @@ class FilterUserParamsTest extends TestCase
 
     /**
      * @throws BlueFishException
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testFilterDisplayNameReturnsFilteredString(): void
     {
@@ -66,6 +68,8 @@ class FilterUserParamsTest extends TestCase
 
     /**
      * @throws BlueFishException
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testFilterPasswordVerifyReturnsFilteredString(): void
     {

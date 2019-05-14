@@ -21,7 +21,7 @@ namespace Geeshoe\BlueFish\Tests\FunctionalTests\Management;
 
 use Geeshoe\BlueFish\Management\Statuses;
 use Geeshoe\BlueFish\Model\Status;
-use Geeshoe\BlueFish\Tests\DBSetupForFuncTests;
+use Geeshoe\BlueFish\Tests\Utilities\TestDatabase;
 use Geeshoe\DbLib\Core\PreparedStoredProcedures;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
@@ -35,7 +35,12 @@ use Ramsey\Uuid\Uuid;
  */
 class StatusesTest extends TestCase
 {
-    use DBSetupForFuncTests;
+    use TestDatabase;
+
+    /**
+     * @var \PDO
+     */
+    protected static $pdo;
 
     /**
      * @var PreparedStoredProcedures
@@ -49,15 +54,9 @@ class StatusesTest extends TestCase
      */
     public static function setUpBeforeClass(): void
     {
-        self::$storedProcedures = self::getDbSetup();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public static function tearDownAfterClass(): void
-    {
-        self::tearDownDB();
+        self::$pdo = self::getConnection();
+        self::$pdo->exec('USE ' . getenv('GSD_BFTD_DATABASE'));
+        self::$storedProcedures = new PreparedStoredProcedures(self::$pdo);
     }
 
     /**
