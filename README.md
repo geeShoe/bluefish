@@ -2,13 +2,7 @@
 BlueFish is a PHP user authentication library.
 
 Please note that this project is in initial development and as such, some 
-documentation may be incomplete. Database tables and a front end are scheduled to
-be released soon.
-
-In the meantime, BlueFish currently only requires a table named BF_Users with the
- following columns:
- 
- _displayName, username, password, role, & status._
+documentation may be incomplete. 
 
 ## Getting Started
 
@@ -19,7 +13,6 @@ BlueFish is intended to be fully compliant with
 
 ### Prerequisites
 
-* DbLib 0.5.2+ [geeshoe/dblib](https://geeshoe.com/projects/DbLib)
 * PHP 7.2+
 * [PDO_MYSQL extension](http://php.net/manual/en/ref.pdo-mysql.php)
 * MariaDb / MySQL
