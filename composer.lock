@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a3e50017e8761af20ece36e5e971bd00",
+    "content-hash": "9f1c2fb8b96a1648cceb0fff8f24d002",
     "packages": [
         {
             "name": "geeshoe/dblib",
@@ -64,20 +64,21 @@
         },
         {
             "name": "geeshoe/helpers",
-            "version": "v0.1.2",
+            "version": "v0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/geeShoe/helpers.git",
-                "reference": "8f1c1f2a85c65e3d54e80b0ace31e6c49d094101"
+                "reference": "d1e44430986d8883daf792d41ab1fc671f1f7275"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/geeShoe/helpers/zipball/8f1c1f2a85c65e3d54e80b0ace31e6c49d094101",
-                "reference": "8f1c1f2a85c65e3d54e80b0ace31e6c49d094101",
+                "url": "https://api.github.com/repos/geeShoe/helpers/zipball/d1e44430986d8883daf792d41ab1fc671f1f7275",
+                "reference": "d1e44430986d8883daf792d41ab1fc671f1f7275",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1"
+                "php": "^7.1",
+                "ramsey/uuid": "^3.8"
             },
             "require-dev": {
                 "mikey179/vfsstream": "^1.6",
@@ -103,7 +104,7 @@
             ],
             "description": "Helper utilities for PHP projects",
             "homepage": "http://www.geeshoe.com",
-            "time": "2019-04-19T19:46:35+00:00"
+            "time": "2019-05-10T19:00:53+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -1825,8 +1826,7 @@
     "prefer-lowest": false,
     "platform": {
         "php": "^7.2",
-        "ext-pdo_mysql": "*",
-        "ext-sodium": "*"
+        "ext-pdo_mysql": "*"
     },
     "platform-dev": []
 }

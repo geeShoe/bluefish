@@ -21,7 +21,7 @@
         "ext-pdo_mysql" : "*",
         "ramsey/uuid": "^3.8",
         "geeshoe/dblib": "@alpha",
-        "geeshoe/helpers": "^0.1.2"
+        "geeshoe/helpers": "^0"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.1",
