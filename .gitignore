@@ -2,3 +2,4 @@
 /.directory
 .idea
 .env.testing.local
+.phpunit.result.*

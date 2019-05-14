@@ -54,20 +54,23 @@ class AddUser extends AbstractUserDBFunctions
 
         $this->comparePasswords($user->password, $user->passwordVerify);
 
+        $user->id = $this->getUUID();
+        $user->password = $this->hashPassword($user->password);
+
+        $this->addUserToDb($user);
+
+        return $this->getUserByID($user->id);
+    }
+
+    protected function getUUID(): string
+    {
         try {
-            $user->id = Uuid::uuid4()->toString();
+            $uuid = Uuid::uuid4()->toString();
         } catch (\Exception $exception) {
             BlueFishException::uuidProblem($exception);
         }
 
-        $user->password = $this->hashPassword($user->password);
-
-        try {
-            $this->addUserToDb($user);
-        } catch (BlueFishException $exception) {
-            throw new BlueFishException('Unable to add user account.', 0, $exception);
-        }
-        return $this->getUserByID($user->id);
+        return $uuid;
     }
 
     /**

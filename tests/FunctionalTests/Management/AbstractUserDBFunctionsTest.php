@@ -25,7 +25,9 @@ namespace Geeshoe\BlueFish\Tests\FunctionalTests\Management;
 use Geeshoe\BlueFish\Exceptions\BlueFishException;
 use Geeshoe\BlueFish\Management\AbstractUserDBFunctions;
 use Geeshoe\BlueFish\Model\User;
-use Geeshoe\BlueFish\Tests\DBSetupForFuncTests;
+use Geeshoe\BlueFish\Tests\Utilities\DatabaseInterface;
+use Geeshoe\BlueFish\Tests\Utilities\TestDatabase;
+use Geeshoe\BlueFish\Tests\Utilities\TestObjects;
 use Geeshoe\DbLib\Core\PreparedStoredProcedures;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
@@ -35,9 +37,10 @@ use Ramsey\Uuid\Uuid;
  *
  * @package Geeshoe\BlueFish\Tests\FunctionalTests\Management
  */
-class AbstractUserDBFunctionsTest extends TestCase
+class AbstractUserDBFunctionsTest extends TestCase implements DatabaseInterface
 {
-    use DBSetupForFuncTests;
+    use TestDatabase,
+        TestObjects;
 
     /**
      * @var Object
@@ -50,21 +53,26 @@ class AbstractUserDBFunctionsTest extends TestCase
     protected static $preparedStatement;
 
     /**
+     * @var \PDO
+     */
+    protected static $pdo;
+
+    /**
+     * @var array
+     */
+    public $userObjectArray;
+
+
+    /**
      * {@inheritDoc}
      *
      * @throws \Exception
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
-        self::$preparedStatement = self::getDbSetup();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public static function tearDownAfterClass()
-    {
-        self::tearDownDB();
+        self::$pdo = self::getConnection();
+        self::$pdo->exec('USE ' . getenv('GSD_BFTD_DATABASE'));
+        self::$preparedStatement = new PreparedStoredProcedures(self::$pdo);
     }
 
     /**
@@ -72,9 +80,10 @@ class AbstractUserDBFunctionsTest extends TestCase
      *
      * @throws \Exception
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->class = $this->extendAbstractClass();
+        self::$pdo->exec('DELETE FROM BF_Users;DELETE FROM BF_Status;DELETE FROM BF_Roles;');
     }
 
     /**
@@ -97,14 +106,65 @@ class AbstractUserDBFunctionsTest extends TestCase
     }
 
     /**
+     * @throws \InvalidArgumentException
+     * @throws \Ramsey\Uuid\Exception\UnsatisfiedDependencyException
+     */
+    public function getUserObject(): void
+    {
+        $this->userObjectArray = self::getUserRoleStatusArray();
+    }
+
+    /**
+     * @throws \Geeshoe\DbLib\Exceptions\DbLibPreparedStmtException
+     * @throws \InvalidArgumentException
+     * @throws \Ramsey\Uuid\Exception\UnsatisfiedDependencyException
+     */
+    public function insertUser(): void
+    {
+        $this->getUserObject();
+
+        $role = $this->userObjectArray['role'];
+        $status = $this->userObjectArray['status'];
+        $user = $this->userObjectArray['user'];
+
+        self::$preparedStatement->executePreparedInsertQuery(
+            'BF_Roles',
+            ['id' => $role->id->getBytes(), 'role' => $role->role]
+        );
+
+        self::$preparedStatement->executePreparedInsertQuery(
+            'BF_Status',
+            ['id' => $status->id->getBytes(), 'status' => $status->status]
+        );
+
+        self::$preparedStatement->executePreparedInsertQuery(
+            'BF_Users',
+            [
+                'id' => $user->id->getBytes(),
+                'username' => $user->username,
+                'displayName' => $user->displayName,
+                'password' => password_hash('1234', PASSWORD_DEFAULT),
+                'role' => $role->id->getBytes(),
+                'status' => $status->id->getBytes()
+            ]
+        );
+    }
+
+    /**
+     * @throws \Geeshoe\DbLib\Exceptions\DbLibPreparedStmtException
+     * @throws \InvalidArgumentException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \Ramsey\Uuid\Exception\UnsatisfiedDependencyException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testGetUserByIdReturnsUserObject(): void
     {
-        $user = $this->class->userId(USERUUID);
-        $this->assertInstanceOf(User::class, $user);
-        $this->assertSame(USERUUID, $user->id);
+        $this->insertUser();
+
+        $result = $this->class->userId($this->userObjectArray['user']->id->toString());
+        $this->assertInstanceOf(User::class, $result);
+        $this->assertSame($this->userObjectArray['user']->id->toString(), $result->id);
     }
 
     /**
@@ -118,14 +178,20 @@ class AbstractUserDBFunctionsTest extends TestCase
     }
 
     /**
+     * @throws \Geeshoe\DbLib\Exceptions\DbLibPreparedStmtException
+     * @throws \InvalidArgumentException
+     * @throws \PHPUnit\Framework\Exception
      * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \Ramsey\Uuid\Exception\UnsatisfiedDependencyException
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testGetUserByNameReturnsUserObject(): void
     {
-        $user = $this->class->userName('testName');
-        $this->assertInstanceOf(User::class, $user);
-        $this->assertSame('TestingAdmin', $user->displayName);
+        $this->insertUser();
+
+        $result = $this->class->userName($this->userObjectArray['user']->username);
+        $this->assertInstanceOf(User::class, $result);
+        $this->assertSame($this->userObjectArray['user']->id->toString(), $result->id);
     }
 
     public function testGetUserByNameThrowsExceptionWithInvalidUsername(): void

@@ -57,3 +57,33 @@ CREATE OR REPLACE PROCEDURE get_user_login_credentials(user VARCHAR(255))
 BEGIN
   SELECT * FROM get_user_login WHERE BINARY user = username;
 END;
+
+CREATE OR REPLACE PROCEDURE add_role(uuid BINARY(36), name VARCHAR(255))
+BEGIN
+    INSERT INTO BF_Roles SET id = UuidToBin(uuid), role = name;
+END;
+
+CREATE OR REPLACE PROCEDURE get_role_by_name(name VARCHAR(50))
+BEGIN
+    SELECT UuidFromBin(id) as id, role FROM BF_Roles WHERE role = name;
+END;
+
+CREATE OR REPLACE PROCEDURE get_role_by_id(uuid BINARY(36))
+BEGIN
+    SELECT UuidFromBin(id) as id, role FROM BF_Roles WHERE id = UuidToBin(uuid);
+END;
+
+CREATE OR REPLACE PROCEDURE add_status(uuid BINARY(36), name VARCHAR(50))
+BEGIN
+    INSERT INTO BF_Status SET id = UuidToBin(uuid), status = name;
+END;
+
+CREATE OR REPLACE PROCEDURE get_status_by_name(name VARCHAR(50))
+BEGIN
+    SELECT UuidFromBin(id) as id, status FROM BF_Status WHERE status = name;
+END;
+
+CREATE OR REPLACE PROCEDURE get_status_by_id(uuid BINARY(36))
+BEGIN
+    SELECT UuidFromBin(id) as id, status FROM BF_Status WHERE id = UuidToBin(uuid);
+END;

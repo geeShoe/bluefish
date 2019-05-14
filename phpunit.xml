@@ -9,6 +9,9 @@
         <testsuite name="FunctionalTests">
             <directory>tests/FunctionalTests/</directory>
         </testsuite>
+        <testsuite name="SQLTests">
+            <directory>tests/SQLTests/</directory>
+        </testsuite>
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2018 Jesse Rushlow - Geeshoe Development
+ * Copyright 2019 Jesse Rushlow - Geeshoe Development
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,48 +15,26 @@
  * limitations under the License.
  */
 
-/**
- * User: Jesse Rushlow - Geeshoe Development
- * Date: 12/9/18 - 11:04 PM
- */
 declare(strict_types=1);
 
-namespace Geeshoe\BlueFish\Users;
+namespace Geeshoe\BlueFish\Model;
 
 /**
- * Class User
+ * Class Status
  *
- * @package Geeshoe\BlueFish\Users
+ * @package Geeshoe\BlueFish\Model
+ * @author  Jesse Rushlow <jr@geeshoe.com>
+ * @link    https://geeshoe.com
  */
-class User
+class Status
 {
     /**
-     * @var int|string
+     * @var string Status UUID
      */
     public $id;
 
     /**
-     * @var string
-     */
-    public $username;
-
-    /**
-     * @var string
-     */
-    public $password;
-
-    /**
-     * @var string
-     */
-    public $displayName;
-
-    /**
-     * @var string
-     */
-    public $role;
-
-    /**
-     * @var string
+     * @var string Name of status
      */
     public $status;
 }

@@ -15,25 +15,19 @@
  * limitations under the License.
  */
 
-/**
- * User: Jesse Rushlow - Geeshoe Development
- * Date: 1/10/19 - 9:21 AM
- */
 declare(strict_types=1);
 
-namespace Geeshoe\BlueFish\Management;
-
-use Geeshoe\BlueFish\Users\User;
+namespace Geeshoe\BlueFish\Tests\Utilities;
 
 /**
- * Class UserProspect
+ * Interface DatabaseInterface
  *
- * @package Geeshoe\BlueFish\Management
+ * @package Geeshoe\BlueFish\Tests\Utilities
  */
-class UserProspect extends User
+interface DatabaseInterface
 {
     /**
-     * @var string
+     * @return \PDO
      */
-    public $passwordVerify;
+    public static function getConnection(): \PDO;
 }

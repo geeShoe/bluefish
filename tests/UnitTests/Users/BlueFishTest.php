@@ -20,13 +20,13 @@
  * Date: 1/10/19 - 4:08 AM
  */
 
-namespace Geeshoe\BlueFish\Tests\UnitTests;
+namespace Geeshoe\BlueFish\Tests\UnitTests\Users;
 
 use Geeshoe\BlueFish\Exceptions\BlueFishException;
 use Geeshoe\BlueFish\Users\BlueFish;
 use Geeshoe\BlueFish\Model\User;
 use Geeshoe\DbLib\Core\PreparedStoredProcedures;
-use Geeshoe\DbLib\Exceptions\DbLibQueryException;
+use Geeshoe\DbLib\Exceptions\DbLibPreparedStmtException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
@@ -46,11 +46,37 @@ class BlueFishTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->prepStmtMock = $this->getMockBuilder(PreparedStoredProcedures::class)
             ->disableOriginalConstructor()
             ->getMock();
+    }
+
+    /**
+     * @covers \Geeshoe\BlueFish\Users\BlueFish::getUser()
+     *
+     * @throws BlueFishException
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     */
+    public function testGetUserCallsMySQLStoredProcedure(): void
+    {
+        $user = new User();
+        $user->password = '1234';
+
+        $this->prepStmtMock->expects($this->once())
+            ->method('executePreparedFetchAsClass')
+            ->with(
+                'CALL get_user_login_credentials(:username);',
+                ['username' => 'UnitTest'],
+                User::class
+            )
+            ->willReturn($user);
+
+        $this->expectException(BlueFishException::class);
+
+        $bluefish = new BlueFish($this->prepStmtMock);
+        $bluefish->login('UnitTest', '1234');
     }
 
     /**
@@ -59,7 +85,7 @@ class BlueFishTest extends TestCase
     public function testValidateUserThrowsExceptionWhenUserDoesNotExist(): void
     {
         $this->prepStmtMock->method('executePreparedFetchAsClass')
-            ->willThrowException(new DbLibQueryException('PDO::fetch() failed to retrieve a result.'));
+            ->willThrowException(new DbLibPreparedStmtException());
         $this->expectException(BlueFishException::class);
         $this->expectExceptionMessage('User does not exist.');
         $this->expectExceptionCode(101);

@@ -15,20 +15,26 @@
  * limitations under the License.
  */
 
-require __DIR__ . '/vendor/autoload.php';
+declare(strict_types=1);
 
-$dotFile = __DIR__ . '/.env.testing.local';
+namespace Geeshoe\BlueFish\Model;
 
-if (!is_file($dotFile) || !is_readable($dotFile)) {
-    throw new RuntimeException(
-        'The functional test suite requires a .env.testing.local file.'
-    );
+/**
+ * Class Role
+ *
+ * @package Geeshoe\BlueFish\Model
+ * @author  Jesse Rushlow <jr@geeshoe.com>
+ * @link    https://geeshoe.com
+ */
+class Role
+{
+    /**
+     * @var string  Role UUID
+     */
+    public $id;
+
+    /**
+     * @var string  Name of role
+     */
+    public $role;
 }
-
-$env = new Symfony\Component\Dotenv\Dotenv();
-$env->load($dotFile);
-
-$connection = new \Geeshoe\BlueFish\Tests\Connection();
-$database = new \Geeshoe\BlueFish\Tests\Database($connection->getPDO());
-$database->createSchema();
-$database->execSQLFiles();
