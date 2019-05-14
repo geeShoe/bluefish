@@ -80,11 +80,18 @@ class BlueFish
         $this->userRecord = $user;
     }
 
+    /**
+     * @param string $userUUID
+     *
+     * @return User
+     *
+     * @throws BlueFishException
+     */
     protected function getUserRecord(string $userUUID): User
     {
         try {
             $result = $this->dblPrepStmt->executePreparedFetchAsClass(
-                'Call get_user_account_by_id(:id)',
+                'CALL get_user_account_by_id(:id);',
                 ['id' => $userUUID],
                 User::class
             );
@@ -98,7 +105,9 @@ class BlueFish
 
     /**
      * @param string $password
+     *
      * @return bool
+     *
      * @throws BlueFishException
      */
     protected function comparePassword(string $password): bool
@@ -121,7 +130,7 @@ class BlueFish
     {
         try {
             $result = $this->dblPrepStmt->executePreparedFetchAsClass(
-                'CALL get_user_login_credentials(:username)',
+                'CALL get_user_login_credentials(:username);',
                 ['username' => $this->username],
                 User::class
             );
@@ -134,6 +143,7 @@ class BlueFish
 
     /**
      * @return bool
+     *
      * @throws BlueFishException
      */
     protected function validateUser(): bool
@@ -163,6 +173,7 @@ class BlueFish
      *
      * @param string $username
      * @param string $password
+     *
      * @return User
      *
      * @throws BlueFishException
